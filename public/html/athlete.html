@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Athlete Profiles - Athlete</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:4000 app://localhost"
+    />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components/forms.css" />
+    <link rel="stylesheet" href="../css/components/modals.css" />
+    <link rel="stylesheet" href="../css/pages/athlete.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./athlete.html">Athletes</a>
+    </nav>
+    <main>
+      <h1 id="athlete-name" class="centered">Athlete Details</h1>
+      <div class="grid-container">
+        <!-- General Information -->
+        <section id="athlete-info" class="card double-width">
+          <h2>General Information</h2>
+          <div id="athlete-details"></div>
+        </section>
+
+        <!-- History Section -->
+        <section id="history" class="card">
+          <h2>History</h2>
+          <ul id="history-list">
+            <!-- Historical data will be listed here -->
+          </ul>
+        </section>
+
+        <!-- Notes Section -->
+        <section id="notes" class="card">
+          <h2>Notes</h2>
+          <div id="notes-content"></div>
+          <form id="note-form">
+            <textarea id="note-input" placeholder="Add a note"></textarea>
+            <button type="submit">Add Note</button>
+          </form>
+        </section>
+
+        <!-- Supplements Section -->
+        <section id="supplements" class="card">
+          <h2>Supplements</h2>
+          <div id="supplements-content"></div>
+          <form id="supplement-form">
+            <textarea
+              id="supplement-input"
+              placeholder="Add a supplement note"
+            ></textarea>
+            <button type="submit">Add Supplement Note</button>
+          </form>
+        </section>
+
+        <!-- Tournaments Section -->
+        <section id="appointments" class="card">
+          <h2>Tournaments</h2>
+          <div id="appointments-content"></div>
+          <form id="appointment-form">
+            <input
+              type="text"
+              id="tournament-name-input"
+              placeholder="Tournament Name"
+              required
+            />
+            <input type="date" id="appointment-input" required />
+            <button type="submit">Add Tournament</button>
+          </form>
+        </section>
+      </div>
+
+      <!-- Custom Table Section -->
+      <div id="custom-table-section" class="card">
+        <h2>Custom Table</h2>
+        <table id="custom-table">
+          <thead>
+            <tr>
+              <th contenteditable="true">Column 1</th>
+              <th contenteditable="true">Column 2</th>
+              <th contenteditable="true">Column 3</th>
+              <th contenteditable="true">Column 4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true"></td>
+              <td contenteditable="true"></td>
+              <td contenteditable="true"></td>
+              <td contenteditable="true"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Edit Modal -->
+      <div id="edit-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <p>Edit Note</p>
+          <textarea id="edit-input"></textarea>
+          <button id="save-edit-button">Save</button>
+        </div>
+      </div>
+
+      <!-- Alert Modal -->
+      <div id="alert-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <p id="alert-message"></p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="../js/athlete.js" defer></script>
+  </body>
+</html>

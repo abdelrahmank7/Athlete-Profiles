@@ -1,0 +1,7 @@
+/* public/css/pages/home.css */
+body {
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  background-color: var(--background-color);
+}

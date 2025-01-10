@@ -1,0 +1,52 @@
+/* public/css/base.css */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --accent-color: #e74c3c;
+  --background-color: #f5f5f5;
+  --card-background: #ffffff;
+  --text-color: #333;
+  --button-background: #3498db;
+  --button-hover: #2980b9;
+  --header-background: #34495e;
+  --header-text-color: #ecf0f1;
+  --input-border-color: #bdc3c7;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  text-align: center;
+}
+
+nav {
+  background-color: var(--header-background);
+  color: var(--header-text-color);
+  padding: 1rem;
+}
+
+nav a {
+  color: var(--header-text-color);
+  margin: 0 1rem;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2 {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Add this to your CSS file (e.g., base.css) */
+
+.centered {
+  transition: opacity 1s ease-in-out;
+}
