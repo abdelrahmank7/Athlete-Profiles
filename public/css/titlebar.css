@@ -1,0 +1,37 @@
+/* public/css/titlebar.css */
+
+.title-bar {
+  background-color: #3498db;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  height: 30px; /* Explicitly set the height */
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
+.title-bar .title {
+  font-size: 16px; /* Slightly smaller font size for better fit */
+}
+
+.title-bar button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px; /* Consistent font size */
+  padding: 0 10px; /* Add padding for better click area */
+  cursor: pointer;
+  height: 100%; /* Ensure buttons take full height */
+  -webkit-app-region: no-drag; /* Exclude buttons from draggable area */
+}
+
+.title-bar .window-controls {
+  display: flex;
+}
+
+.title-bar .window-controls button:hover,
+.title-bar button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

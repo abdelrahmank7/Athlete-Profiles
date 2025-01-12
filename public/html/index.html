@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Athlete Profiles - Home</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:4000 app://localhost"
+    />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components/forms.css" />
+    <link rel="stylesheet" href="../css/components/modals.css" />
+    <link rel="stylesheet" href="../css/components/athlete-card.css" />
+    <link rel="stylesheet" href="../css/components/spinner.css" />
+    <link rel="stylesheet" href="../css/pages/home.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./athlete.html">Athletes</a>
+    </nav>
+    <main>
+      <h1 id="main-title" class="centered">Welcome to Athlete Profiles</h1>
+      <div class="grid-container">
+        <!-- Select Athlete Section -->
+        <section id="athlete-list" class="card">
+          <h2>Select Athlete</h2>
+          <input
+            type="text"
+            id="search"
+            class="styled-input"
+            placeholder="Search by name"
+          />
+          <select id="sport-filter" class="styled-select">
+            <option value="" disabled selected>Select Sport</option>
+          </select>
+          <select id="club-filter" class="styled-select">
+            <option value="" disabled selected>Select Club</option>
+          </select>
+          <ul id="results"></ul>
+          <!-- Ensure the "results" element is here -->
+        </section>
+
+        <!-- Add New Athlete Section -->
+        <section id="add-athlete" class="card">
+          <h2>Add New Athlete</h2>
+          <form id="athlete-form">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Name"
+              required
+            />
+            <input
+              type="date"
+              name="birthdate"
+              id="birthdate"
+              placeholder="Birthdate"
+              required
+            />
+            <input
+              type="number"
+              name="weight"
+              id="weight"
+              placeholder="Weight"
+              required
+            />
+            <input
+              type="number"
+              name="targetWeight"
+              id="target-weight"
+              placeholder="Targeted Weight"
+              required
+            />
+            <input
+              type="number"
+              name="height"
+              id="height"
+              placeholder="Height (cm)"
+              required
+            />
+            <select name="club" id="club" required>
+              <option value="" disabled selected>Select Club</option>
+            </select>
+            <select name="sport" id="sport" required>
+              <option value="" disabled selected>Select Sport</option>
+            </select>
+            <button type="submit">Add Athlete</button>
+          </form>
+        </section>
+
+        <!-- Add New Club Section -->
+        <section id="add-club" class="card">
+          <h2>Add New Club</h2>
+          <form id="club-form">
+            <input
+              type="text"
+              id="club-name"
+              placeholder="Club Name"
+              required
+            />
+            <button type="submit">Add Club</button>
+          </form>
+        </section>
+
+        <!-- Add New Sport Section -->
+        <section id="add-sport" class="card">
+          <h2>Add New Sport</h2>
+          <form id="sport-form">
+            <input
+              type="text"
+              id="sport-name"
+              placeholder="Sport Name"
+              required
+            />
+            <button type="submit">Add Sport</button>
+          </form>
+        </section>
+      </div>
+
+      <!-- Alert Modal -->
+      <div id="alert-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <div id="alert-message"></div>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loading-spinner" class="spinner" style="display: none">
+        Loading...
+      </div>
+    </main>
+    <script src="../js/main.js" type="module" defer></script>
+  </body>
+</html>

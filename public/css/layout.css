@@ -1,0 +1,28 @@
+/* public/css/layout.css */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 20px;
+  padding: 2rem;
+}
+
+.centered {
+  text-align: center;
+}
+
+.card {
+  padding: 20px;
+  background-color: var(--card-background);
+  border: 1px solid var(--input-border-color);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#results {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  /* gap: 20px; */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

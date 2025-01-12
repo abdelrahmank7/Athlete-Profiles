@@ -1,0 +1,29 @@
+/* public/css/pages/athlete.css */
+body {
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  background-color: var(--background-color);
+}
+
+#custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#custom-table th,
+#custom-table td {
+  border: 1px solid var(--input-border-color);
+  padding: 8px;
+}
+
+#custom-table th {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: left;
+}
+
+#custom-table td {
+  text-align: left;
+  color: var(--text-color);
+}

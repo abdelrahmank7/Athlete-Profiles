@@ -1,0 +1,73 @@
+/* public/css/components/athlete-card.css */
+.athlete-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: var(--card-background);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--text-color);
+  border: 2px solid var(--primary-color);
+  margin: 1rem 0;
+  opacity: 0;
+  animation: fadeIn 1s forwards, slideUp 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.athlete-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-color: var (--secondary-color);
+}
+
+.athlete-info {
+  display: flex;
+  align-items: center;
+}
+
+.athlete-info h3 {
+  margin-right: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.athlete-info p {
+  margin: 0 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+.athlete-card .view-profile-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--button-background);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.athlete-card .view-profile-button:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-3px);
+}

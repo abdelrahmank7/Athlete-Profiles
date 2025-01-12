@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loading...</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <!-- Link to the CSS file -->
+  </head>
+  <body>
+    <div>
+      <div class="loader"></div>
+      <div class="message" id="loadingMessage">Initializing...</div>
+      <div class="progress-bar">
+        <div id="progressBar"></div>
+      </div>
+      <div class="error-message" id="errorMessage">
+        An error occurred. Please try again.
+      </div>
+    </div>
+    <script>
+      const messages = [
+        "Loading resources...",
+        "Fetching data...",
+        "Almost there...",
+        "Just a moment...",
+      ];
+      let messageIndex = 0;
+      setInterval(() => {
+        document.getElementById("loadingMessage").textContent =
+          messages[messageIndex];
+        messageIndex = (messageIndex + 1) % messages.length;
+      }, 2000);
+
+      // Simulate loading progress for demo purposes
+      let progress = 0;
+      const progressBar = document.getElementById("progressBar");
+      const errorMessage = document.getElementById("errorMessage");
+      function updateProgress() {
+        if (progress >= 100) {
+          return;
+        }
+        progress += 10;
+        progressBar.style.width = progress + "%";
+        if (progress === 100) {
+          // Simulate an error for demonstration purposes
+          if (Math.random() < 0.2) {
+            errorMessage.style.display = "block";
+          } else {
+            // Hide loader and show main content
+            setTimeout(() => {
+              window.location.href = "http://localhost:4000";
+            }, 500);
+          }
+        }
+      }
+      setInterval(updateProgress, 1000); // Simulate progress every second
+    </script>
+  </body>
+</html>
