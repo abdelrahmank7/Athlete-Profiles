@@ -1,25 +1,38 @@
-const sqlite3 = require("sqlite3").verbose();
-const fs = require("fs");
-const path = require("path");
+import sqlite3 from "sqlite3";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Ensure the directory exists
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const dataDir = path.join(__dirname, "data");
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir);
 }
 
-// Create and connect to the SQLite database
+// Create and connect to the SQLite database for athletes
 const dbPath = path.join(dataDir, "database.db");
-const db = new sqlite3.Database(dbPath, (err) => {
+const athletesDb = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error("Error opening database:", err.message);
+    console.error("Error opening athletes database:", err.message);
   } else {
     console.log("Connected to the SQLite database.");
   }
 });
 
+// Create and connect to the SQLite database for clubs and sports
+const clubsAndSportsDbPath = path.join(dataDir, "clubsAndSports.db");
+const clubsAndSportsDb = new sqlite3.Database(clubsAndSportsDbPath, (err) => {
+  if (err) {
+    console.error("Error opening clubsAndSports database:", err.message);
+  } else {
+    console.log("Connected to the SQLite clubsAndSports database.");
+  }
+});
+
 // Function to create tables
-const createTables = () => {
+const createTables = (db) => {
   const tables = [
     {
       name: "athletes",
@@ -113,7 +126,8 @@ const createTables = () => {
   });
 };
 
-// Initialize the tables if they don't exist
-db.serialize(createTables);
+// Initialize the tables if they don't exist in both databases
+athletesDb.serialize(() => createTables(athletesDb));
+clubsAndSportsDb.serialize(() => createTables(clubsAndSportsDb));
 
-module.exports = db;
+export { athletesDb, clubsAndSportsDb };

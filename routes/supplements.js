@@ -1,7 +1,8 @@
-const express = require("express");
-const db = require("../models/database");
+import express from "express";
+import { athletesDb } from "../models/database.js"; // Updated to use athletesDb
+import { v4 as uuidv4 } from "uuid";
+
 const router = express.Router();
-const { v4: uuidv4 } = require("uuid");
 
 // Add a supplement note to an athlete
 router.post("/:id/supplements", (req, res) => {
@@ -10,7 +11,9 @@ router.post("/:id/supplements", (req, res) => {
   const date = new Date().toISOString().split("T")[0];
   const noteId = uuidv4();
 
-  if (!note) return res.status(400).send("Supplement note is required");
+  if (!note) {
+    return res.status(400).json({ error: "Supplement note is required" });
+  }
 
   const query = `
     INSERT INTO supplements (id, athleteId, note, date)
@@ -18,9 +21,12 @@ router.post("/:id/supplements", (req, res) => {
   `;
   const params = [noteId, id, note, date];
 
-  db.run(query, params, function (err) {
-    if (err) return res.status(500).send(err);
-    res.status(201).send({ message: "Supplement note added successfully" });
+  athletesDb.run(query, params, function (err) {
+    if (err) {
+      console.error("Error adding supplement note:", err);
+      return res.status(500).json({ error: "Failed to add supplement note" });
+    }
+    res.status(201).json({ message: "Supplement note added successfully" });
   });
 });
 
@@ -34,10 +40,15 @@ router.delete("/:athleteId/supplements/:noteId", (req, res) => {
   `;
   const params = [noteId, athleteId];
 
-  db.run(query, params, function (err) {
-    if (err) return res.status(500).send(err);
-    res.status(200).send({ message: "Supplement note deleted successfully" });
+  athletesDb.run(query, params, function (err) {
+    if (err) {
+      console.error("Error deleting supplement note:", err);
+      return res
+        .status(500)
+        .json({ error: "Failed to delete supplement note" });
+    }
+    res.status(200).json({ message: "Supplement note deleted successfully" });
   });
 });
 
-module.exports = router;
+export default router;

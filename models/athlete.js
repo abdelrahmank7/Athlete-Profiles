@@ -63,4 +63,4 @@ class Athlete {
   }
 }
 
-module.exports = Athlete;
+export default Athlete;

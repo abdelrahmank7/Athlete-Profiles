@@ -1,5 +1,6 @@
-const express = require("express");
-const { clubsAndSportsDb } = require("../models/database");
+import express from "express";
+import { clubsAndSportsDb } from "../models/database.js";
+
 const router = express.Router();
 
 // Get all clubs and sports
@@ -7,7 +8,12 @@ router.get("/", (req, res) => {
   clubsAndSportsDb.find(
     { $or: [{ type: "club" }, { type: "sport" }] },
     (err, docs) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error fetching clubs and sports:", err);
+        return res
+          .status(500)
+          .json({ error: "Failed to fetch clubs and sports" });
+      }
 
       const clubs = docs
         .filter((doc) => doc.type === "club")
@@ -16,9 +22,9 @@ router.get("/", (req, res) => {
         .filter((doc) => doc.type === "sport")
         .map((doc) => doc.value);
 
-      res.send({ clubs, sports });
+      res.status(200).json({ clubs, sports });
     }
   );
 });
 
-module.exports = router;
+export default router;

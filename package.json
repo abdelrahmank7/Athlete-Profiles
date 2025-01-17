@@ -1,10 +1,10 @@
 {
   "name": "athletes-profiles",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon --watch . --exec electron .",
-    "electron": "ELECTRON_DISABLE_SECURITY_WARNINGS=true electron ."
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "AK47",
@@ -17,8 +17,6 @@
     "compression": "^1.7.4",
     "connect-redis": "^8.0.1",
     "dotenv": "^16.4.7",
-    "electron-devtools-installer": "^4.0.0",
-    "electron-settings": "^4.0.4",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
@@ -29,32 +27,10 @@
     "progress": "^2.0.3",
     "redis": "^4.7.0",
     "sqlite3": "^5.1.7",
-    "update-electron-app": "^3.1.0",
     "uuid": "^11.0.3",
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0",
-    "electron": "^33.2.1",
-    "electron-builder": "^25.1.8",
     "nodemon": "^3.1.9"
-  },
-  "build": {
-    "appId": "com.yourapp.id",
-    "win": {
-      "target": "nsis"
-    },
-    "files": [
-      "dist/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "your-github-username",
-        "repo": "your-repo-name"
-      }
-    ]
   }
 }

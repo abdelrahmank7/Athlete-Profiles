@@ -71,3 +71,75 @@ export function addFormAndTableEventListeners(athleteId) {
     });
   }
 }
+
+export function addHistoryEventListeners() {
+  const deleteButtons = document.querySelectorAll(
+    "#history-list .delete-button"
+  );
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const athleteId = event.target.dataset.athleteId;
+      const recordId = event.target.dataset.recordId;
+      await deleteHistoryRecord(athleteId, recordId);
+    });
+  });
+}
+
+export function addNotesEventListeners() {
+  const deleteButtons = document.querySelectorAll(
+    "#notes-content .delete-button"
+  );
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const athleteId = event.target.dataset.athleteId;
+      const noteId = event.target.dataset.noteId;
+      await deleteNote(athleteId, noteId);
+    });
+  });
+
+  const editButtons = document.querySelectorAll("#notes-content .edit-button");
+  editButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      // Implement edit functionality
+    });
+  });
+}
+
+export function addSupplementsEventListeners() {
+  const deleteButtons = document.querySelectorAll(
+    "#supplements-content .delete-button"
+  );
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const athleteId = event.target.dataset.athleteId;
+      const noteId = event.target.dataset.noteId;
+      await deleteSupplement(athleteId, noteId);
+    });
+  });
+
+  const editButtons = document.querySelectorAll(
+    "#supplements-content .edit-button"
+  );
+  editButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      // Implement edit functionality
+    });
+  });
+}
+
+export function addAppointmentsEventListeners() {
+  const deleteButtons = document.querySelectorAll(
+    "#appointments-content .delete-button"
+  );
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const athleteId = event.target.dataset.athleteId;
+      const appointmentId = event.target.dataset.appointmentId;
+      await deleteAppointment(athleteId, appointmentId);
+    });
+  });
+}
+
+function handleFormSubmissions(athleteId) {
+  // Implement form submission handling, if any
+}

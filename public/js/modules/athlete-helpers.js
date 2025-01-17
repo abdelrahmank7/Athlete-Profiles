@@ -2,7 +2,7 @@ export async function fetchAthleteDetails(athleteId) {
   console.log("Fetching details for Athlete ID:", athleteId); // Log athlete ID when fetching details
 
   try {
-    const res = await fetch(`http://localhost:4000/api/athletes/${athleteId}`);
+    const res = await fetch(`/api/athletes/${athleteId}`);
     if (!res.ok) {
       throw new Error("Athlete not found");
     }
@@ -11,7 +11,7 @@ export async function fetchAthleteDetails(athleteId) {
     if (!athlete) {
       console.error("No athlete data received");
       document.body.innerHTML =
-        '<h1>Athlete not found. Please return to <a href="index.html">Home</a></h1>';
+        '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
       return null;
     }
 
@@ -38,7 +38,7 @@ export async function fetchAthleteDetails(athleteId) {
   } catch (error) {
     console.error("Error fetching athlete details:", error);
     document.body.innerHTML =
-      '<h1>Athlete not found. Please return to <a href="index.html">Home</a></h1>';
+      '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
     return null;
   }
 }

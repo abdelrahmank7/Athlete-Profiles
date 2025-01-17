@@ -4,10 +4,9 @@ export async function initializeAthletePage(athleteId) {
   console.log("Initializing Athlete Page with ID:", athleteId); // Log athlete ID during initialization
 
   const athlete = await fetchAthleteDetails(athleteId);
-
   if (!athlete) {
     document.body.innerHTML =
-      '<h1>Athlete not found. Please return to <a href="index.html">Home</a></h1>';
+      '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
     return;
   }
 

@@ -1,7 +1,8 @@
-const express = require("express");
-const { athletesDb } = require("../models/database");
+import express from "express";
+import { athletesDb } from "../models/database.js";
+import { v4 as uuidv4 } from "uuid";
+
 const router = express.Router();
-const { v4: uuidv4 } = require("uuid");
 
 // Update additional information for an athlete
 router.post("/:id/additional-info", (req, res) => {
@@ -12,7 +13,7 @@ router.post("/:id/additional-info", (req, res) => {
   if (!currentWeight || !fatsPercentage || !musclePercentage) {
     return res
       .status(400)
-      .send("All additional information fields are required");
+      .json({ error: "All additional information fields are required" });
   }
 
   const updateData = {
@@ -36,13 +37,13 @@ router.post("/:id/additional-info", (req, res) => {
     (err) => {
       if (err) {
         console.error("Error updating additional information:", err);
-        return res.status(500).send("Internal Server Error");
+        return res.status(500).json({ error: "Internal Server Error" });
       }
       res
         .status(200)
-        .send({ message: "Additional information updated successfully" });
+        .json({ message: "Additional information updated successfully" });
     }
   );
 });
 
-module.exports = router;
+export default router;
