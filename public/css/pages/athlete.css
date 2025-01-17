@@ -27,3 +27,131 @@ body {
   text-align: left;
   color: var(--text-color);
 }
+
+.sticky-save-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  padding: 10px 20px;
+  background-color: #1081fa;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sticky-save-button:hover {
+  background-color: #0056b3;
+}
+
+/* Style edit and remove buttons to display only the images */
+.edit-button,
+.remove-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: block;
+}
+
+.edit-button img,
+.remove-button img {
+  width: 16px; /* Adjust size as needed */
+  height: 16px;
+  transition: filter 0.3s, transform 0.3s;
+}
+
+/* Change icon color on hover without adding background */
+.edit-button:hover img,
+.remove-button:hover img {
+  filter: brightness(0.8); /* Darken the icon on hover */
+}
+
+.edit-button img {
+  transition: transform 0.3s ease;
+}
+
+.edit-button img:hover {
+  transform: rotate(360deg); /* Simple animation for icon change */
+}
+
+/* Ensure the note and buttons are aligned on the same line */
+#notes-content div {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd; /* Optional: Add border to separate notes */
+  border-radius: 5px; /* Optional: Add border radius for rounded corners */
+}
+
+/* Ensure note text wraps properly and doesn't overflow */
+.note-text {
+  word-wrap: break-word; /* Ensure long words break to the next line */
+  white-space: pre-wrap; /* Preserve white space and wrap text */
+  flex-grow: 1; /* Allow note text to take available space */
+  margin-right: 10px; /* Add margin to separate text from buttons */
+  text-align: justify; /* Justify text */
+  overflow-wrap: anywhere; /* Break long words to prevent overflow */
+}
+
+/* Container for the edit and remove buttons */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Style the save button */
+.save-edit-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-edit-button:hover {
+  background-color: #0056b3;
+}
+
+/* Style for notes content */
+#notes-content {
+  max-height: 300px; /* Set a max height for the notes section */
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+}
+
+/* Add this section to apply the same styles to supplements */
+
+/* Ensure the supplement and buttons are aligned on the same line */
+#supplements-content div {
+  display: flex;
+  justify-content: space-between; /* Ensure space between supplement and buttons */
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd; /* Optional: Add border to separate supplements */
+  border-radius: 5px; /* Optional: Add border radius for rounded corners */
+  overflow: hidden; /* Prevent content from overflowing */
+}
+
+/* Ensure supplement text wraps properly and doesn't overflow */
+.supplement-text {
+  word-wrap: break-word; /* Ensure long words break to the next line */
+  white-space: pre-wrap; /* Preserve white space and wrap text */
+  flex-grow: 1; /* Allow supplement text to take available space */
+  margin-right: 10px; /* Add margin to separate text from buttons */
+  text-align: justify; /* Justify text */
+}
+
+/* Container for the edit and remove buttons */
+.supplement-button-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: center; /* Center buttons vertically */
+  justify-content: center;
+}

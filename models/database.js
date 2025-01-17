@@ -45,6 +45,7 @@ const createTables = (db) => {
         height INTEGER,
         club TEXT,
         sport TEXT,
+        customTable TEXT, -- Add customTable field
         currentWeight INTEGER,
         fatsPercentage INTEGER,
         musclePercentage INTEGER
@@ -89,14 +90,6 @@ const createTables = (db) => {
         weight INTEGER,
         fats INTEGER,
         muscle INTEGER,
-        FOREIGN KEY (athleteId) REFERENCES athletes(id)
-      `,
-    },
-    {
-      name: "customTables",
-      schema: `
-        athleteId TEXT,
-        tableData TEXT,
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },

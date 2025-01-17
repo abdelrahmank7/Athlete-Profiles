@@ -16,7 +16,7 @@ router.use("/athletes", athletesRoutes);
 router.use("/clubs", clubsRoutes);
 router.use("/sports", sportsRoutes);
 router.use("/filters", filtersRoutes);
-router.use("/notes", notesRoutes);
+router.use("/athletes", notesRoutes); // Ensure notes routes are under athletes
 router.use("/supplements", supplementsRoutes);
 router.use("/appointments", appointmentsRoutes);
 router.use("/additional-info", additionalInfoRoutes);

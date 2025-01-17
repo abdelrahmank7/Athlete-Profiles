@@ -27,12 +27,14 @@ async function startExpressServer() {
   app.use(morgan("dev"));
 
   // Rate Limiting
-  app.use(
-    rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-    })
-  );
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 200, // limit each IP to 200 requests per windowMs
+    message: "Too many requests, please try again later.",
+  });
+
+  // Apply the rate limit to API routes only
+  app.use("/api/", apiLimiter);
 
   // Helmet for Security
   app.use(
@@ -72,12 +74,18 @@ async function startExpressServer() {
       ),
     })
   );
-
+  ///////////////////////////////////////////
   // Serve static files
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
-  app.use(express.static(path.join(__dirname, "public"), { maxAge: "1d" }));
+  app.use(express.static(path.join(__dirname, "public"), { maxAge: "0" }));
 
+  app.use((req, res, next) => {
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+    next();
+  });
+
+  ////////////////////////////////////////////
   // Routes
   app.use("/api", routes); // Use central router
 

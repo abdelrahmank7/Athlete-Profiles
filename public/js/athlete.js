@@ -1,15 +1,8 @@
 import { initializeAthletePage } from "./modules/athlete-init.js";
-import {
-  addFormAndTableEventListeners,
-  addHistoryEventListeners,
-  addNotesEventListeners,
-  addSupplementsEventListeners,
-  addAppointmentsEventListeners,
-} from "./modules/athlete-event-listeners.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const athleteId = new URLSearchParams(window.location.search).get("id");
-  console.log("Athlete ID from URL:", athleteId); // Log athlete ID from URL
+  console.log("Athlete ID from URL:", athleteId);
 
   if (!athleteId) {
     document.body.innerHTML =
@@ -18,14 +11,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   await initializeAthletePage(athleteId);
-  addHistoryEventListeners();
-  addNotesEventListeners();
-  addSupplementsEventListeners();
-  addAppointmentsEventListeners();
-  addFormAndTableEventListeners(athleteId); // Pass athleteId to the function
-  handleFormSubmissions(athleteId);
-});
 
-function handleFormSubmissions(athleteId) {
-  // Implement form submission handling
-}
+  // Add save button click event listener
+  const saveButton = document.getElementById("save-button");
+  if (saveButton) {
+    saveButton.addEventListener("click", async () => {
+      console.log("Save button clicked");
+      // We will implement the save functionality here step by step
+    });
+  }
+});

@@ -178,38 +178,6 @@ router.get("/filters", (req, res) => {
   });
 });
 
-// Add a note to an athlete
-router.post("/:id/notes", (req, res) => {
-  const { id } = req.params;
-  const { note } = req.body;
-  const date = new Date().toISOString().split("T")[0];
-  const noteId = uuidv4();
-  if (!note) return res.status(400).json({ error: "Note is required" });
-  athletesDb.update(
-    { _id: id },
-    { $push: { notes: { _id: noteId, note, date } } },
-    {},
-    (err) => {
-      if (err) return res.status(500).json({ error: "Failed to add note" });
-      res.status(201).json({ message: "Note added successfully" });
-    }
-  );
-});
-
-// Delete a note from an athlete
-router.delete("/:athleteId/notes/:noteId", (req, res) => {
-  const { athleteId, noteId } = req.params;
-  athletesDb.update(
-    { _id: athleteId },
-    { $pull: { notes: { _id: noteId } } },
-    {},
-    (err) => {
-      if (err) return res.status(500).json({ error: "Failed to delete note" });
-      res.status(200).json({ message: "Note deleted successfully" });
-    }
-  );
-});
-
 // Add a supplement note to an athlete
 router.post("/:id/supplements", (req, res) => {
   const { id } = req.params;
@@ -303,7 +271,7 @@ router.post("/:id/additional-info", (req, res) => {
     date,
     weight: currentWeight,
     fats: fatsPercentage,
-    muscle: musclePercentage,
+    muscle: Percentage,
   };
   athletesDb.update(
     { _id: id },

@@ -4,10 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Athlete Profiles - Athlete</title>
-    <!-- <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:4000 app://localhost"
-    /> -->
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/components/forms.css" />
@@ -21,21 +17,19 @@
     </nav>
     <main>
       <h1 id="athlete-name" class="centered">Athlete Details</h1>
+      <button id="save-button" class="sticky-save-button">Save</button>
+      <!-- Add save button here -->
       <div class="grid-container">
         <!-- General Information -->
         <section id="athlete-info" class="card double-width">
           <h2>General Information</h2>
           <div id="athlete-details"></div>
         </section>
-
         <!-- History Section -->
         <section id="history" class="card">
           <h2>History</h2>
-          <ul id="history-list">
-            <!-- Historical data will be listed here -->
-          </ul>
+          <ul id="history-list"></ul>
         </section>
-
         <!-- Notes Section -->
         <section id="notes" class="card">
           <h2>Notes</h2>
@@ -45,7 +39,6 @@
             <button type="submit">Add Note</button>
           </form>
         </section>
-
         <!-- Supplements Section -->
         <section id="supplements" class="card">
           <h2>Supplements</h2>
@@ -58,7 +51,6 @@
             <button type="submit">Add Supplement Note</button>
           </form>
         </section>
-
         <!-- Tournaments Section -->
         <section id="appointments" class="card">
           <h2>Tournaments</h2>
@@ -75,7 +67,6 @@
           </form>
         </section>
       </div>
-
       <!-- Custom Table Section -->
       <div id="custom-table-section" class="card">
         <h2>Custom Table</h2>
@@ -98,7 +89,6 @@
           </tbody>
         </table>
       </div>
-
       <!-- Edit Modal -->
       <div id="edit-modal" class="modal">
         <div class="modal-content">
@@ -108,7 +98,6 @@
           <button id="save-edit-button">Save</button>
         </div>
       </div>
-
       <!-- Alert Modal -->
       <div id="alert-modal" class="modal">
         <div class="modal-content">

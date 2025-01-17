@@ -1,5 +1,5 @@
 import express from "express";
-import { athletesDb } from "../models/database.js"; // Updated to use athletesDb
+import { athletesDb } from "../models/database.js";
 import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
@@ -26,7 +26,21 @@ router.post("/:id/notes", (req, res) => {
       console.error("Error adding note:", err);
       return res.status(500).json({ error: "Failed to add note" });
     }
-    res.status(201).json({ message: "Note added successfully" });
+    res.status(201).json({ message: "Note added successfully", id: noteId });
+  });
+});
+
+// Update a note
+router.put("/:athleteId/notes/:noteId", (req, res) => {
+  const { athleteId, noteId } = req.params;
+  const { note } = req.body;
+  const query = "UPDATE notes SET note = ? WHERE id = ? AND athleteId = ?";
+
+  athletesDb.run(query, [note, noteId, athleteId], function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Failed to update note" });
+    }
+    res.status(200).json({ message: "Note updated successfully" });
   });
 });
 
@@ -46,6 +60,19 @@ router.delete("/:athleteId/notes/:noteId", (req, res) => {
       return res.status(500).json({ error: "Failed to delete note" });
     }
     res.status(200).json({ message: "Note deleted successfully" });
+  });
+});
+
+// Fetch notes for an athlete
+router.get("/:id/notes", (req, res) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM notes WHERE athleteId = ?";
+
+  athletesDb.all(query, [id], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to fetch notes" });
+    }
+    res.status(200).json(rows);
   });
 });
 
