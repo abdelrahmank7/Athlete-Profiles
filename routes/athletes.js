@@ -177,55 +177,6 @@ router.get("/filters", (req, res) => {
   });
 });
 
-// Add a supplement note to an athlete
-// router.post("/:id/supplements", (req, res) => {
-//   const { id } = req.params;
-//   const { supplement, date } = req.body;
-//   const supplementId = uuidv4();
-
-//   console.log("Received data:", req.body); // Log received data for debugging
-
-//   if (!supplement) {
-//     console.log("Missing supplement field");
-//     return res.status(400).json({ error: "Supplement note is required" });
-//   }
-
-//   const query = `
-//     INSERT INTO supplements (id, athleteId, supplement, date)
-//     VALUES (?, ?, ?, ?)
-//   `;
-//   const params = [supplementId, id, supplement, date];
-
-//   athletesDb.run(query, params, function (err) {
-//     if (err) {
-//       console.error("Error adding supplement note:", err.message); // Log detailed error message
-//       return res.status(500).json({ error: "Failed to add supplement note" });
-//     }
-//     res.status(201).json({
-//       message: "Supplement note added successfully",
-//       id: supplementId,
-//     });
-//   });
-// });
-
-// // Delete a supplement note from an athlete
-// router.delete("/:athleteId/supplements/:noteId", (req, res) => {
-//   const { athleteId, noteId } = req.params;
-//   athletesDb.run(
-//     `DELETE FROM supplements WHERE id = ? AND athleteId = ?`,
-//     [noteId, athleteId],
-//     (err) => {
-//       if (err) {
-//         console.error("Error deleting supplement note:", err);
-//         return res
-//           .status(500)
-//           .json({ error: "Failed to delete supplement note" });
-//       }
-//       res.status(200).json({ message: "Supplement note deleted successfully" });
-//     }
-//   );
-// });
-
 // Add a tournament date to an athlete
 router.post("/:id/appointments", (req, res) => {
   const { id } = req.params;

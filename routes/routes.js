@@ -5,10 +5,11 @@ import sportsRoutes from "./sports.js";
 import filtersRoutes from "./filters.js";
 import notesRoutes from "./notes.js";
 import supplementsRoutes from "./supplements.js";
-import tournamentsRoutes from "./tournaments.js"; // Import the tournaments routes
+import tournamentsRoutes from "./tournaments.js";
 import additionalInfoRoutes from "./additionalInfo.js";
 import historyRoutes from "./history.js";
 import customTableRoutes from "./customTable.js";
+import generalInfoRoutes from "./generalInfo"; // Import the new generalInfo route
 
 const router = express.Router();
 
@@ -16,11 +17,12 @@ router.use("/athletes", athletesRoutes);
 router.use("/clubs", clubsRoutes);
 router.use("/sports", sportsRoutes);
 router.use("/filters", filtersRoutes);
-router.use("/athletes", notesRoutes); // Ensure notes routes are under athletes
-router.use("/athletes", supplementsRoutes); // Adjusted to nest supplements under athletes
-router.use("/athletes", tournamentsRoutes); // Add tournaments routes
+router.use("/athletes", notesRoutes);
+router.use("/athletes", supplementsRoutes);
+router.use("/athletes", tournamentsRoutes);
 router.use("/additional-info", additionalInfoRoutes);
 router.use("/history", historyRoutes);
 router.use("/custom-table", customTableRoutes);
+router.use("/athletes", generalInfoRoutes); // Add the new generalInfo route
 
 export default router;

@@ -1,4 +1,4 @@
-/* public/css/pages/athlete.css */
+/* Base Styles */
 body {
   font-size: 16px;
   line-height: 1.6;
@@ -6,6 +6,7 @@ body {
   background-color: var(--background-color);
 }
 
+/* Custom Table */
 #custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -28,6 +29,7 @@ body {
   color: var(--text-color);
 }
 
+/* Sticky Save Button */
 .sticky-save-button {
   position: fixed;
   top: 10px;
@@ -45,7 +47,7 @@ body {
   background-color: #0056b3;
 }
 
-/* Style edit and remove buttons to display only the images */
+/* Edit and Remove Buttons */
 .edit-button,
 .remove-button {
   background: none;
@@ -58,7 +60,7 @@ body {
 
 .edit-button img,
 .remove-button img {
-  width: 16px; /* Adjust size as needed */
+  width: 16px;
   height: 16px;
   transition: filter 0.3s, transform 0.3s;
 }
@@ -66,39 +68,51 @@ body {
 /* Change icon color on hover without adding background */
 .edit-button:hover img,
 .remove-button:hover img {
-  filter: brightness(0.8); /* Darken the icon on hover */
-}
-
-.edit-button img {
-  transition: transform 0.3s ease;
+  filter: brightness(0.8);
 }
 
 .edit-button img:hover {
-  transform: rotate(360deg); /* Simple animation for icon change */
+  transform: rotate(360deg);
 }
 
-/* Ensure the note and buttons are aligned on the same line */
-#notes-content div {
+/* Card Sections */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+}
+
+/* Ensure note and buttons are aligned on the same line */
+#notes-content div,
+#supplements-content div,
+#tournaments-content div {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ddd; /* Optional: Add border to separate notes */
-  border-radius: 5px; /* Optional: Add border radius for rounded corners */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-/* Ensure note text wraps properly and doesn't overflow */
-.note-text {
-  word-wrap: break-word; /* Ensure long words break to the next line */
-  white-space: pre-wrap; /* Preserve white space and wrap text */
-  flex-grow: 1; /* Allow note text to take available space */
-  margin-right: 10px; /* Add margin to separate text from buttons */
-  text-align: justify; /* Justify text */
-  overflow-wrap: anywhere; /* Break long words to prevent overflow */
+/* Ensure text wraps properly and doesn't overflow */
+.note-text,
+.supplement-text,
+.tournament-text {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  flex-grow: 1;
+  margin-right: 10px;
+  text-align: justify;
 }
 
 /* Container for the edit and remove buttons */
-.button-container {
+.button-container,
+.supplement-button-container,
+.tournament-button-container {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -119,39 +133,33 @@ body {
   background-color: #0056b3;
 }
 
-/* Style for notes content */
-#notes-content {
-  max-height: 300px; /* Set a max height for the notes section */
+/* Style for notes, supplements, and tournaments content */
+#notes-content,
+#supplements-content,
+#tournaments-content {
+  max-height: 300px; /* Set a max height for the section */
   overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
 }
 
-/* Add this section to apply the same styles to supplements */
-
-/* Ensure the supplement and buttons are aligned on the same line */
-#supplements-content div {
-  display: flex;
-  justify-content: space-between; /* Ensure space between supplement and buttons */
-  align-items: center;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd; /* Optional: Add border to separate supplements */
-  border-radius: 5px; /* Optional: Add border radius for rounded corners */
-  overflow: hidden; /* Prevent content from overflowing */
+/* General Information Styles */
+#athlete-info {
+  margin-top: 20px;
 }
 
-/* Ensure supplement text wraps properly and doesn't overflow */
-.supplement-text {
-  word-wrap: break-word; /* Ensure long words break to the next line */
-  white-space: pre-wrap; /* Preserve white space and wrap text */
-  flex-grow: 1; /* Allow supplement text to take available space */
-  margin-right: 10px; /* Add margin to separate text from buttons */
-  text-align: justify; /* Justify text */
+#athlete-details p {
+  margin: 5px 0;
 }
 
-/* Container for the edit and remove buttons */
-.supplement-button-container {
-  display: flex;
-  flex-direction: column; /* Stack buttons vertically */
-  align-items: center; /* Center buttons vertically */
-  justify-content: center;
+#edit-athlete-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#edit-athlete-button:hover {
+  background-color: #0056b3;
 }

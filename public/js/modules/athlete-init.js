@@ -1,12 +1,103 @@
+// Initialize athlete page
 export async function initializeAthletePage(athleteId) {
   console.log(`Initializing athlete page for ID: ${athleteId}`);
 
   await fetchAthleteDetails(athleteId);
   await fetchSupplements(athleteId);
-  await fetchTournaments(athleteId); // Fetch tournaments on page load
+  await fetchTournaments(athleteId);
+  await fetchNotes(athleteId);
   setupNoteForm(athleteId);
   setupSupplementForm(athleteId);
-  setupTournamentForm(athleteId); // Setup tournament form
+  setupTournamentForm(athleteId);
+  setupEditAthleteForm(athleteId); // Setup the edit athlete form
+}
+
+// Fetch athlete details and populate the General Information section
+async function fetchAthleteDetails(athleteId) {
+  try {
+    const res = await fetch(`/api/athletes/${athleteId}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch athlete details");
+    }
+    const athlete = await res.json();
+    document.getElementById("athlete-name").textContent = athlete.name;
+    document.getElementById("athlete-birthdate").textContent =
+      athlete.birthdate;
+    document.getElementById("athlete-age").textContent = calculateAge(
+      athlete.birthdate
+    );
+    document.getElementById("athlete-weight").textContent = athlete.weight;
+    document.getElementById("athlete-target-weight").textContent =
+      athlete.targetWeight;
+    document.getElementById("athlete-height").textContent = athlete.height;
+    document.getElementById("athlete-club").textContent = athlete.club;
+    document.getElementById("athlete-sport").textContent = athlete.sport;
+  } catch (error) {
+    console.error("Error fetching athlete details:", error);
+  }
+}
+
+// Calculate age from birthdate in years and months
+function calculateAge(birthdate) {
+  const birthDate = new Date(birthdate);
+  const now = new Date();
+
+  const years = now.getFullYear() - birthDate.getFullYear();
+  const months = now.getMonth() - birthDate.getMonth();
+
+  // Adjust if the birth month hasn't been reached yet this year
+  const adjustedMonths = months < 0 ? months + 12 : months;
+  const adjustedYears = months < 0 ? years - 1 : years;
+
+  return `${adjustedYears} years and ${adjustedMonths} months`;
+}
+
+// Setup the edit athlete form
+function setupEditAthleteForm(athleteId) {
+  const editButton = document.getElementById("edit-athlete-button");
+  editButton.addEventListener("click", () => {
+    const athleteDetails = document.getElementById("athlete-details");
+
+    // Toggle edit mode
+    const isEditable = athleteDetails.contentEditable === "true";
+    athleteDetails.contentEditable = isEditable ? "false" : "true";
+    editButton.textContent = isEditable ? "Edit" : "Save";
+
+    if (isEditable) {
+      // Extract updated details
+      const updatedDetails = {
+        birthdate: document.getElementById("athlete-birthdate").textContent,
+        weight: document.getElementById("athlete-weight").textContent,
+        targetWeight: document.getElementById("athlete-target-weight")
+          .textContent,
+        height: document.getElementById("athlete-height").textContent,
+        club: document.getElementById("athlete-club").textContent,
+        sport: document.getElementById("athlete-sport").textContent,
+      };
+
+      // Update athlete details on the server using the new route
+      saveAthleteDetailsToServer(athleteId, updatedDetails);
+    }
+  });
+}
+
+// Save the updated athlete details to the server
+async function saveAthleteDetailsToServer(athleteId, details) {
+  try {
+    const res = await fetch(`/api/athletes/${athleteId}/general-info`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
+    if (!res.ok) {
+      throw new Error("Failed to update athlete details");
+    }
+    console.log("Athlete details updated successfully");
+  } catch (error) {
+    console.error("Error updating athlete details:", error);
+  }
 }
 
 // Fetch tournaments for the athlete
@@ -20,8 +111,8 @@ async function fetchTournaments(athleteId) {
     tournaments.forEach((tournament) => {
       addTournamentToPage(
         athleteId,
-        tournament.date,
         tournament.tournamentName,
+        tournament.date,
         tournament.id
       );
     });
@@ -32,11 +123,11 @@ async function fetchTournaments(athleteId) {
 
 function addTournamentToPage(
   athleteId,
-  date,
   tournamentName,
+  date,
   tournamentId = null
 ) {
-  const tournamentsContent = document.getElementById("appointments-content");
+  const tournamentsContent = document.getElementById("tournaments-content");
   const tournamentElement = document.createElement("div");
   const formattedDate = date || new Date().toISOString().split("T")[0];
 
@@ -87,20 +178,21 @@ function addTournamentToPage(
     });
 
   if (!tournamentId) {
-    saveTournamentToServer(athleteId, date, tournamentName, (id) => {
+    saveTournamentToServer(athleteId, tournamentName, formattedDate, (id) => {
       tournamentId = id;
     });
   }
 }
 
+// Helper functions for tournament operations
 async function saveTournamentToServer(
   athleteId,
-  date,
   tournamentName,
+  date,
   callback
 ) {
   try {
-    const requestData = { date, tournamentName };
+    const requestData = { tournamentName, date };
     console.log("Sending data:", requestData);
     const res = await fetch(`/api/athletes/${athleteId}/tournaments`, {
       method: "POST",
@@ -123,13 +215,13 @@ async function saveTournamentToServer(
 
 async function updateTournamentOnServer(athleteId, tournamentId, tournament) {
   try {
-    const [date, tournamentName] = tournament.split(": ");
+    const [formattedDate, tournamentName] = tournament.split(": ");
     await fetch(`/api/athletes/${athleteId}/tournaments/${tournamentId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ date, tournamentName }),
+      body: JSON.stringify({ date: formattedDate, tournamentName }),
     });
   } catch (error) {
     console.error("Error updating tournament:", error);
@@ -147,30 +239,30 @@ async function deleteTournamentFromServer(athleteId, tournamentId) {
 }
 
 function setupTournamentForm(athleteId) {
-  const tournamentForm = document.getElementById("appointment-form");
+  const tournamentForm = document.getElementById("tournament-form");
   if (tournamentForm) {
     tournamentForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const tournamentNameInput = document.getElementById(
         "tournament-name-input"
       ).value;
-      const dateInput = document.getElementById("appointment-input").value;
-      if (tournamentNameInput.trim() && dateInput) {
+      const dateInput = document.getElementById("tournament-date-input").value;
+      if (tournamentNameInput.trim() && dateInput.trim()) {
         await saveTournamentToServer(
           athleteId,
-          dateInput,
           tournamentNameInput,
+          dateInput,
           (tournamentId) => {
             addTournamentToPage(
               athleteId,
-              dateInput,
               tournamentNameInput,
+              dateInput,
               tournamentId
             );
           }
         );
         document.getElementById("tournament-name-input").value = "";
-        document.getElementById("appointment-input").value = "";
+        document.getElementById("tournament-date-input").value = "";
       }
     });
   } else {
@@ -199,31 +291,31 @@ async function fetchSupplements(athleteId) {
   }
 }
 
-async function fetchAthleteDetails(athleteId) {
-  try {
-    const res = await fetch(`/api/athletes/${athleteId}`);
-    if (!res.ok) {
-      throw new Error("Athlete not found");
-    }
-    const athlete = await res.json();
+// async function fetchAthleteDetails(athleteId) {
+//   try {
+//     const res = await fetch(`/api/athletes/${athleteId}`);
+//     if (!res.ok) {
+//       throw new Error("Athlete not found");
+//     }
+//     const athlete = await res.json();
 
-    if (!athlete) {
-      document.body.innerHTML =
-        '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
-      return;
-    }
+//     if (!athlete) {
+//       document.body.innerHTML =
+//         '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
+//       return;
+//     }
 
-    document.getElementById("athlete-name").textContent = athlete.name;
+//     document.getElementById("athlete-name").textContent = athlete.name;
 
-    // Fetch and display notes
-    await fetchNotes(athleteId);
-    console.log(`Athlete Name: ${athlete.name}`);
-  } catch (error) {
-    console.error("Error fetching athlete details:", error);
-    document.body.innerHTML =
-      '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
-  }
-}
+//     // Fetch and display notes
+//     await fetchNotes(athleteId);
+//     console.log(`Athlete Name: ${athlete.name}`);
+//   } catch (error) {
+//     console.error("Error fetching athlete details:", error);
+//     document.body.innerHTML =
+//       '<h1>Athlete not found. Please return to <a href="/">Home</a></h1>';
+//   }
+// }
 
 async function fetchNotes(athleteId) {
   try {
