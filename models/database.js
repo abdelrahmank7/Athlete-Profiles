@@ -66,8 +66,18 @@ const createTables = (db) => {
       schema: `
         id TEXT PRIMARY KEY,
         athleteId TEXT,
-        note TEXT,
+        supplement TEXT, -- Corrected field name
         date TEXT,
+        FOREIGN KEY (athleteId) REFERENCES athletes(id)
+      `,
+    },
+    {
+      name: "tournaments", // Add tournaments table
+      schema: `
+        id TEXT PRIMARY KEY,
+        athleteId TEXT,
+        date TEXT,
+        tournamentName TEXT,
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },

@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 
 const router = express.Router();
-
 // Fetch all athletes
 router.get("/", (req, res) => {
   const { name, sport, club } = req.query;
@@ -179,41 +178,53 @@ router.get("/filters", (req, res) => {
 });
 
 // Add a supplement note to an athlete
-router.post("/:id/supplements", (req, res) => {
-  const { id } = req.params;
-  const { note } = req.body;
-  const date = new Date().toISOString().split("T")[0];
-  const noteId = uuidv4();
-  if (!note)
-    return res.status(400).json({ error: "Supplement note is required" });
-  athletesDb.update(
-    { _id: id },
-    { $push: { supplementNotes: { _id: noteId, note, date } } },
-    {},
-    (err) => {
-      if (err)
-        return res.status(500).json({ error: "Failed to add supplement note" });
-      res.status(201).json({ message: "Supplement note added successfully" });
-    }
-  );
-});
+// router.post("/:id/supplements", (req, res) => {
+//   const { id } = req.params;
+//   const { supplement, date } = req.body;
+//   const supplementId = uuidv4();
 
-// Delete a supplement note from an athlete
-router.delete("/:athleteId/supplements/:noteId", (req, res) => {
-  const { athleteId, noteId } = req.params;
-  athletesDb.update(
-    { _id: athleteId },
-    { $pull: { supplementNotes: { _id: noteId } } },
-    {},
-    (err) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Failed to delete supplement note" });
-      res.status(200).json({ message: "Supplement note deleted successfully" });
-    }
-  );
-});
+//   console.log("Received data:", req.body); // Log received data for debugging
+
+//   if (!supplement) {
+//     console.log("Missing supplement field");
+//     return res.status(400).json({ error: "Supplement note is required" });
+//   }
+
+//   const query = `
+//     INSERT INTO supplements (id, athleteId, supplement, date)
+//     VALUES (?, ?, ?, ?)
+//   `;
+//   const params = [supplementId, id, supplement, date];
+
+//   athletesDb.run(query, params, function (err) {
+//     if (err) {
+//       console.error("Error adding supplement note:", err.message); // Log detailed error message
+//       return res.status(500).json({ error: "Failed to add supplement note" });
+//     }
+//     res.status(201).json({
+//       message: "Supplement note added successfully",
+//       id: supplementId,
+//     });
+//   });
+// });
+
+// // Delete a supplement note from an athlete
+// router.delete("/:athleteId/supplements/:noteId", (req, res) => {
+//   const { athleteId, noteId } = req.params;
+//   athletesDb.run(
+//     `DELETE FROM supplements WHERE id = ? AND athleteId = ?`,
+//     [noteId, athleteId],
+//     (err) => {
+//       if (err) {
+//         console.error("Error deleting supplement note:", err);
+//         return res
+//           .status(500)
+//           .json({ error: "Failed to delete supplement note" });
+//       }
+//       res.status(200).json({ message: "Supplement note deleted successfully" });
+//     }
+//   );
+// });
 
 // Add a tournament date to an athlete
 router.post("/:id/appointments", (req, res) => {
@@ -271,7 +282,7 @@ router.post("/:id/additional-info", (req, res) => {
     date,
     weight: currentWeight,
     fats: fatsPercentage,
-    muscle: Percentage,
+    muscle: musclePercentage, // Corrected typo here
   };
   athletesDb.update(
     { _id: id },
