@@ -45,7 +45,7 @@ const createTables = (db) => {
         height INTEGER,
         club TEXT,
         sport TEXT,
-        customTable TEXT, -- Add customTable field
+        customTable TEXT,
         currentWeight INTEGER,
         fatsPercentage INTEGER,
         musclePercentage INTEGER
@@ -66,13 +66,13 @@ const createTables = (db) => {
       schema: `
         id TEXT PRIMARY KEY,
         athleteId TEXT,
-        supplement TEXT, -- Corrected field name
+        supplement TEXT,
         date TEXT,
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },
     {
-      name: "tournaments", // Add tournaments table
+      name: "tournaments",
       schema: `
         id TEXT PRIMARY KEY,
         athleteId TEXT,
@@ -97,9 +97,9 @@ const createTables = (db) => {
         id TEXT PRIMARY KEY,
         athleteId TEXT,
         date TEXT,
-        weight INTEGER,
-        fats INTEGER,
-        muscle INTEGER,
+        weight TEXT,
+        fats TEXT,
+        muscle TEXT,
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },

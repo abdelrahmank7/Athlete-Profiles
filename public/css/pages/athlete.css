@@ -6,10 +6,11 @@ body {
   background-color: var(--background-color);
 }
 
-/* Custom Table */
+/* Custom Table Enhancements */
 #custom-table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 10px; /* Add space below the table */
 }
 
 #custom-table th,
@@ -27,6 +28,35 @@ body {
 #custom-table td {
   text-align: left;
   color: var(--text-color);
+}
+
+#custom-table-section {
+  overflow-x: auto; /* Enable horizontal scrolling if the table overflows */
+}
+
+.add-row-button {
+  padding: 5px 10px;
+  background-color: #1081fa;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-row-button:hover {
+  background-color: #0056b3;
+}
+
+/* Ensure responsive behavior for small screens */
+@media (max-width: 768px) {
+  #custom-table th,
+  #custom-table td {
+    padding: 4px; /* Reduce padding for smaller screens */
+  }
+
+  .sticky-save-button {
+    padding: 5px 10px; /* Adjust button padding for smaller screens */
+  }
 }
 
 /* Sticky Save Button */
@@ -162,4 +192,62 @@ body {
 
 #edit-athlete-button:hover {
   background-color: #0056b3;
+}
+
+/* Style for history content */
+#history-content div {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd; /* Optional: Add border to separate history records */
+  border-radius: 5px; /* Optional: Add border radius for rounded corners */
+}
+
+/* Ensure history record text wraps properly and doesn't overflow */
+.history-text {
+  word-wrap: break-word; /* Ensure long words break to the next line */
+  white-space: pre-wrap; /* Preserve white space and wrap text */
+  flex-grow: 1; /* Allow history record text to take available space */
+  margin-right: 10px; /* Add margin to separate text from buttons */
+  text-align: justify; /* Justify text */
+}
+
+/* Container for the edit and remove buttons */
+.history-button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Edit and Remove Buttons */
+.edit-button,
+.remove-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: block;
+}
+
+.edit-button img,
+.remove-button img {
+  width: 16px; /* Adjust size as needed */
+  height: 16px;
+  transition: filter 0.3s, transform 0.3s;
+}
+
+/* Change icon color on hover without adding background */
+.edit-button:hover img,
+.remove-button:hover img {
+  filter: brightness(0.8); /* Darken the icon on hover */
+}
+
+.edit-button img {
+  transition: transform 0.3s ease;
+}
+
+.edit-button img:hover {
+  transform: rotate(360deg); /* Simple animation for icon change */
 }

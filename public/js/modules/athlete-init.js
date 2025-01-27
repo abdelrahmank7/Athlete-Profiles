@@ -1,4 +1,81 @@
-// Initialize athlete page
+// Function to add a new row to the custom table
+function addNewRow() {
+  const customTable = document.getElementById("custom-table");
+  const newRow = customTable.insertRow();
+  for (let i = 0; i < customTable.rows[0].cells.length; i++) {
+    const newCell = newRow.insertCell();
+    newCell.contentEditable = "true";
+  }
+}
+
+// Function to save the custom table data to the server
+// Function to save the custom table data to the server
+async function saveCustomTableToServer(athleteId) {
+  const customTable = document.getElementById("custom-table");
+  const tableData = [];
+  for (let i = 1; i < customTable.rows.length; i++) {
+    const row = [];
+    for (let j = 0; j < customTable.rows[i].cells.length; j++) {
+      row.push(customTable.rows[i].cells[j].textContent);
+    }
+    tableData.push(row);
+  }
+
+  console.log("Saving table data:", JSON.stringify(tableData)); // Log table data before sending
+
+  try {
+    const response = await fetch(`/api/athletes/${athleteId}/custom-table`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tableData }),
+    });
+    const result = await response.json();
+    console.log("Response from save:", result);
+    alert("Table data saved successfully.");
+  } catch (error) {
+    console.error("Error saving table data:", error);
+    alert("Failed to save table data.");
+  }
+}
+
+// Function to load the custom table data from the server
+async function loadCustomTableFromServer(athleteId) {
+  try {
+    const res = await fetch(`/api/athletes/${athleteId}/custom-table`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch custom table data");
+    }
+    const { customTable } = await res.json();
+    console.log("Loaded customTable data:", customTable); // Log loaded data
+    const customTableElement = document.getElementById("custom-table");
+    const tableData = JSON.parse(customTable || "[]"); // Ensure empty string defaults to empty array
+    tableData.forEach((row) => {
+      const newRow = customTableElement.insertRow();
+      row.forEach((cellData) => {
+        const newCell = newRow.insertCell();
+        newCell.contentEditable = "true";
+        newCell.textContent = cellData;
+      });
+    });
+  } catch (error) {
+    console.error("Error loading custom table data:", error);
+  }
+}
+
+// Initialize custom table functionality
+function initializeCustomTable(athleteId) {
+  document
+    .getElementById("add-row-button")
+    .addEventListener("click", addNewRow);
+  document
+    .getElementById("save-button")
+    .addEventListener("click", () => saveCustomTableToServer(athleteId));
+  loadCustomTableFromServer(athleteId);
+}
+
+// Add call to initialize the custom table in initializeAthletePage
 export async function initializeAthletePage(athleteId) {
   console.log(`Initializing athlete page for ID: ${athleteId}`);
 
@@ -6,10 +83,202 @@ export async function initializeAthletePage(athleteId) {
   await fetchSupplements(athleteId);
   await fetchTournaments(athleteId);
   await fetchNotes(athleteId);
+  await fetchHistory(athleteId); // Ensure this function is called
   setupNoteForm(athleteId);
   setupSupplementForm(athleteId);
   setupTournamentForm(athleteId);
+  setupHistoryForm(athleteId); // Setup the history form
   setupEditAthleteForm(athleteId); // Setup the edit athlete form
+  initializeCustomTable(athleteId); // Initialize custom table
+}
+
+// Fetch history records for the athlete
+async function fetchHistory(athleteId) {
+  try {
+    const res = await fetch(`/api/athletes/${athleteId}/history`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch history records");
+    }
+    const historyRecords = await res.json();
+    historyRecords.forEach((record) => {
+      addHistoryRecordToPage(
+        athleteId,
+        record.date,
+        record.weight,
+        record.fats,
+        record.muscle,
+        record.id
+      );
+    });
+  } catch (error) {
+    console.error("Error fetching history records:", error);
+  }
+}
+
+// Helper function to add a history record to the page
+function addHistoryRecordToPage(
+  athleteId,
+  date,
+  weight,
+  fats,
+  muscle,
+  recordId = null
+) {
+  const historyContent = document.getElementById("history-content");
+  const historyElement = document.createElement("div");
+  const formattedDate = date || new Date().toISOString().split("T")[0];
+
+  historyElement.innerHTML = `
+    <p class="history-text">${formattedDate}: Weight: ${weight} kg, Fats: ${fats}%, Muscle: ${muscle}%</p>
+    <div class="button-container">
+      <button class="edit-button"><img src="../assets/images/edit-icon.png" alt="Edit" /></button>
+      <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
+    </div>
+  `;
+  historyContent.appendChild(historyElement);
+
+  // Add event listener for the remove button
+  historyElement
+    .querySelector(".remove-button")
+    .addEventListener("click", async (event) => {
+      event.preventDefault();
+      if (recordId) {
+        await deleteHistoryRecordFromServer(athleteId, recordId);
+      }
+      historyElement.remove();
+    });
+
+  // Add event listener for the edit button
+  historyElement
+    .querySelector(".edit-button")
+    .addEventListener("click", (event) => {
+      event.preventDefault();
+      const historyText = historyElement.querySelector(".history-text");
+      const editButton = historyElement.querySelector(".edit-button img");
+
+      if (historyText.contentEditable === "true") {
+        historyText.contentEditable = "false";
+        editButton.src = "../assets/images/edit-icon.png";
+        if (recordId) {
+          updateHistoryRecordOnServer(
+            athleteId,
+            recordId,
+            historyText.textContent
+          );
+        }
+      } else {
+        historyText.contentEditable = "true";
+        historyText.focus();
+        editButton.src = "../assets/images/save-icon.png";
+      }
+    });
+
+  if (!recordId) {
+    saveHistoryRecordToServer(athleteId, date, weight, fats, muscle, (id) => {
+      recordId = id;
+    });
+  }
+}
+
+// Helper functions for history operations
+async function saveHistoryRecordToServer(
+  athleteId,
+  date,
+  weight,
+  fats,
+  muscle,
+  callback
+) {
+  try {
+    const res = await fetch(`/api/athletes/${athleteId}/history`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ date, weight, fats, muscle }),
+    });
+    const result = await res.json();
+    callback(result.id);
+  } catch (error) {
+    console.error("Error saving history record:", error);
+  }
+}
+
+async function updateHistoryRecordOnServer(athleteId, recordId, historyText) {
+  console.log("History Text:", historyText); // Debug log
+
+  const match = historyText.match(
+    /^(.*): Weight: (\d+(?:\.\d+)?) kg, Fats: (\d+(?:\.\d+)?)%, Muscle: (\d+(?:\.\d+)?)%$/
+  );
+  if (!match) {
+    console.error("Error parsing history text content:", historyText);
+    return;
+  }
+
+  const [, date, weight, fats, muscle] = match;
+  console.log("Parsed Date:", date);
+  console.log("Parsed Weight:", weight);
+  console.log("Parsed Fats:", fats);
+  console.log("Parsed Muscle:", muscle);
+
+  try {
+    await fetch(`/api/athletes/${athleteId}/history/${recordId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ date, weight, fats, muscle }),
+    });
+  } catch (error) {
+    console.error("Error updating history record:", error);
+  }
+}
+
+async function deleteHistoryRecordFromServer(athleteId, recordId) {
+  try {
+    const res = await fetch(`/api/athletes/${athleteId}/history/${recordId}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to delete history record: ${res.statusText}`);
+    }
+    console.log(`Successfully deleted history record: ${recordId}`);
+  } catch (error) {
+    console.error("Error deleting history record:", error);
+  }
+}
+
+function setupHistoryForm(athleteId) {
+  const historyForm = document.getElementById("history-form");
+  historyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const date = new Date().toISOString().split("T")[0];
+    const weight = document.getElementById("history-weight-input").value;
+    const fats = document.getElementById("history-fats-input").value;
+    const muscle = document.getElementById("history-muscle-input").value;
+    if (weight.trim() && fats.trim() && muscle.trim()) {
+      await saveHistoryRecordToServer(
+        athleteId,
+        date,
+        weight,
+        fats,
+        muscle,
+        (recordId) => {
+          addHistoryRecordToPage(
+            athleteId,
+            date,
+            weight,
+            fats,
+            muscle,
+            recordId
+          );
+        }
+      );
+      document.getElementById("history-weight-input").value = "";
+      document.getElementById("history-fats-input").value = "";
+      document.getElementById("history-muscle-input").value = "";
+    }
+  });
 }
 
 // Fetch athlete details and populate the General Information section

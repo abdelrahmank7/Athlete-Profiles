@@ -42,8 +42,30 @@
         <!-- History Section -->
         <section id="history" class="card">
           <h2>History</h2>
-          <ul id="history-list"></ul>
+          <div id="history-content"></div>
+          <form id="history-form">
+            <input
+              type="number"
+              id="history-weight-input"
+              placeholder="Weight (kg)"
+              required
+            />
+            <input
+              type="number"
+              id="history-fats-input"
+              placeholder="Fat (%)"
+              required
+            />
+            <input
+              type="number"
+              id="history-muscle-input"
+              placeholder="Muscle (%)"
+              required
+            />
+            <button type="submit">Add Record</button>
+          </form>
         </section>
+
         <!-- Notes Section -->
         <section id="notes" class="card">
           <h2>Notes</h2>
@@ -102,6 +124,7 @@
             </tr>
           </tbody>
         </table>
+        <button id="add-row-button" class="add-row-button">Add Row</button>
       </div>
       <!-- Edit Modal -->
       <div id="edit-modal" class="modal">
