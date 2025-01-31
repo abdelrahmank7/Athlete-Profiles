@@ -1,4 +1,4 @@
-import { initializeAthletePage } from "./modules/athlete-init.js";
+import { initializeAthletePage } from "./modules/initializeAthletePage.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const athleteId = new URLSearchParams(window.location.search).get("id");

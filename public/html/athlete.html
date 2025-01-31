@@ -104,15 +104,16 @@
         </section>
       </div>
       <!-- Custom Table Section -->
+
       <div id="custom-table-section" class="card">
         <h2>Custom Table</h2>
         <table id="custom-table">
           <thead>
             <tr>
-              <th contenteditable="true">Column 1</th>
-              <th contenteditable="true">Column 2</th>
-              <th contenteditable="true">Column 3</th>
-              <th contenteditable="true">Column 4</th>
+              <th>Column 1</th>
+              <th>Column 2</th>
+              <th>Column 3</th>
+              <th>Column 4</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +126,9 @@
           </tbody>
         </table>
         <button id="add-row-button" class="add-row-button">Add Row</button>
+        <button id="save-all-button" class="save-all-button">
+          Save All Rows
+        </button>
       </div>
       <!-- Edit Modal -->
       <div id="edit-modal" class="modal">
@@ -144,11 +148,18 @@
       </div>
     </main>
     <script type="module" src="../js/athlete.js" defer></script>
-    <script type="module" src="../js/modules/athlete-init.js" defer></script>
+    <script
+      type="module"
+      src="../js/modules/initializeAthletePage.js"
+      defer
+    ></script>
     <script
       type="module"
       src="../js/modules/athlete-event-listeners.js"
       defer
     ></script>
+    <script type="module" src="../js/modules/customTable.js" defer></script>
+    <input type="hidden" id="athlete-id" value="your-athlete-id" />
+    <!-- Hidden field for athlete ID -->
   </body>
 </html>

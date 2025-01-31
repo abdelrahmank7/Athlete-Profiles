@@ -6,12 +6,12 @@ import { fileURLToPath } from "url";
 // Ensure the directory exists
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataDir = path.join(__dirname, "data");
+const dataDir = path.join(__dirname, "models/data");
 if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir);
+  fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Create and connect to the SQLite database for athletes
+// Correct database path
 const dbPath = path.join(dataDir, "database.db");
 const athletesDb = new sqlite3.Database(dbPath, (err) => {
   if (err) {
@@ -40,15 +40,14 @@ const createTables = (db) => {
         id TEXT PRIMARY KEY,
         name TEXT,
         birthdate TEXT,
-        weight INTEGER,
-        targetWeight INTEGER,
-        height INTEGER,
+        weight REAL,
+        targetWeight REAL,
+        height REAL,
         club TEXT,
         sport TEXT,
-        customTable TEXT,
-        currentWeight INTEGER,
-        fatsPercentage INTEGER,
-        musclePercentage INTEGER
+        currentWeight REAL,
+        fatsPercentage REAL,
+        musclePercentage REAL
       `,
     },
     {
@@ -104,6 +103,16 @@ const createTables = (db) => {
       `,
     },
     {
+      name: "customTableRows",
+      schema: `
+        id TEXT PRIMARY KEY,
+        athleteId TEXT,
+        rowIndex INTEGER,
+        rowData TEXT,
+        FOREIGN KEY (athleteId) REFERENCES athletes(id)
+      `,
+    },
+    {
       name: "clubs",
       schema: `
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -119,11 +128,13 @@ const createTables = (db) => {
     },
   ];
 
-  tables.forEach((table) => {
-    const query = `CREATE TABLE IF NOT EXISTS ${table.name} (${table.schema})`;
+  tables.forEach(({ name, schema }) => {
+    const query = `CREATE TABLE IF NOT EXISTS ${name} (${schema})`;
     db.run(query, (err) => {
       if (err) {
-        console.error(`Error creating table ${table.name}:`, err.message);
+        console.error(`Error creating table ${name}:`, err.message);
+      } else {
+        console.log(`Table ${name} ensured.`);
       }
     });
   });

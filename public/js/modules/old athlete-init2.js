@@ -9,7 +9,6 @@ function addNewRow() {
 }
 
 // Function to save the custom table data to the server
-// Function to save the custom table data to the server
 async function saveCustomTableToServer(athleteId) {
   const customTable = document.getElementById("custom-table");
   const tableData = [];
@@ -49,8 +48,9 @@ async function loadCustomTableFromServer(athleteId) {
     }
     const { customTable } = await res.json();
     console.log("Loaded customTable data:", customTable); // Log loaded data
+
     const customTableElement = document.getElementById("custom-table");
-    const tableData = JSON.parse(customTable || "[]"); // Ensure empty string defaults to empty array
+    const tableData = customTable ? JSON.parse(customTable) : []; // Ensure empty string defaults to empty array
     tableData.forEach((row) => {
       const newRow = customTableElement.insertRow();
       row.forEach((cellData) => {

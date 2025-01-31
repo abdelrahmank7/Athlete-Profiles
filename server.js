@@ -10,11 +10,14 @@ import winston from "winston";
 import expressWinston from "express-winston";
 import path from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
 import routes from "./routes/routes.js"; // Import central router
+import listEndpoints from "express-list-endpoints";
 
 // Load environment variables
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function startExpressServer() {
   const app = express();
@@ -25,6 +28,7 @@ async function startExpressServer() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(morgan("dev"));
+  app.use(express.json());
 
   // Rate Limiting
   const apiLimiter = rateLimit({
@@ -74,10 +78,8 @@ async function startExpressServer() {
       ),
     })
   );
-  ///////////////////////////////////////////
+
   // Serve static files
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
   app.use(express.static(path.join(__dirname, "public"), { maxAge: "0" }));
 
   app.use((req, res, next) => {
@@ -85,7 +87,6 @@ async function startExpressServer() {
     next();
   });
 
-  ////////////////////////////////////////////
   // Routes
   app.use("/api", routes); // Use central router
 
@@ -109,6 +110,8 @@ async function startExpressServer() {
   // Start the server
   app.listen(port, () => {
     console.log(`Express server running on http://localhost:${port}`);
+    console.log("Available Endpoints:");
+    console.table(listEndpoints(app));
   });
 }
 
