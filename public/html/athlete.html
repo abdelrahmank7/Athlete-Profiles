@@ -104,32 +104,23 @@
         </section>
       </div>
       <!-- Custom Table Section -->
-
-      <div id="custom-table-section" class="card">
+      <section id="custom-table-section" class="card">
         <h2>Custom Table</h2>
-        <table id="custom-table">
+        <input type="hidden" id="athlete-id" value="" />
+        <table id="custom-table" border="1">
           <thead>
-            <tr>
-              <th>Column 1</th>
-              <th>Column 2</th>
-              <th>Column 3</th>
-              <th>Column 4</th>
+            <tr id="header-row">
+              <th contenteditable="true">Column 1</th>
+              <th contenteditable="true">Column 2</th>
+              <th contenteditable="true">Column 3</th>
+              <th contenteditable="true">Column 4</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td contenteditable="true"></td>
-              <td contenteditable="true"></td>
-              <td contenteditable="true"></td>
-              <td contenteditable="true"></td>
-            </tr>
-          </tbody>
+          <tbody id="body-rows"></tbody>
         </table>
-        <button id="add-row-button" class="add-row-button">Add Row</button>
-        <button id="save-all-button" class="save-all-button">
-          Save All Rows
-        </button>
-      </div>
+        <button id="add-row-button">Add Row</button>
+        <button id="save-all-button">Save All</button>
+      </section>
       <!-- Edit Modal -->
       <div id="edit-modal" class="modal">
         <div class="modal-content">
@@ -159,7 +150,5 @@
       defer
     ></script>
     <script type="module" src="../js/modules/customTable.js" defer></script>
-    <input type="hidden" id="athlete-id" value="your-athlete-id" />
-    <!-- Hidden field for athlete ID -->
   </body>
 </html>

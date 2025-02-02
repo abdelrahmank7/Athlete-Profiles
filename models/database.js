@@ -103,12 +103,11 @@ const createTables = (db) => {
       `,
     },
     {
-      name: "customTableRows",
+      name: "customTable",
       schema: `
-        id TEXT PRIMARY KEY,
-        athleteId TEXT,
-        rowIndex INTEGER,
-        rowData TEXT,
+        athleteId TEXT PRIMARY KEY,
+        tableHead TEXT,
+        tableRows TEXT,
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },

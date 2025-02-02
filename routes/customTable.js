@@ -1,5 +1,4 @@
 import express from "express";
-import { v4 as uuidv4 } from "uuid";
 import { athletesDb } from "../models/database.js";
 
 const router = express.Router();
@@ -8,24 +7,27 @@ const router = express.Router();
 router.get("/:athleteId/custom-table", (req, res) => {
   const { athleteId } = req.params;
   const query =
-    "SELECT rowIndex, rowData FROM customTableRows WHERE athleteId = ? ORDER BY rowIndex";
+    "SELECT tableHead, tableRows FROM customTable WHERE athleteId = ?";
   console.log(`Fetching custom table data for athlete: ${athleteId}`);
 
-  athletesDb.all(query, [athleteId], (err, rows) => {
+  athletesDb.get(query, [athleteId], (err, row) => {
     if (err) {
       console.error("Error fetching custom table data:", err.message);
       return res
         .status(500)
         .json({ error: "Failed to fetch custom table data" });
     }
-    if (!rows.length) {
+    if (!row) {
       console.warn(`Custom table data not found for athlete: ${athleteId}`);
-      return res.status(404).json({ error: "Custom table data not found" });
+      return res.json({
+        customTable: [],
+        tableHead: ["Column 1", "Column 2", "Column 3", "Column 4"],
+      });
     }
     try {
-      console.log("Fetched rows from database:", rows);
-      const customTable = rows.map((row) => JSON.parse(row.rowData));
-      res.status(200).json({ customTable });
+      const tableHead = JSON.parse(row.tableHead);
+      const customTable = JSON.parse(row.tableRows);
+      res.json({ customTable, tableHead });
     } catch (parseError) {
       console.error("Error parsing custom table data:", parseError.message);
       res.status(500).json({ error: "Failed to parse custom table data" });
@@ -33,73 +35,36 @@ router.get("/:athleteId/custom-table", (req, res) => {
   });
 });
 
-// Save a new row in the custom table for an athlete
-router.post("/:athleteId/custom-table/row", (req, res) => {
+// Save custom table data for an athlete
+router.put("/:athleteId/custom-table", (req, res) => {
   const { athleteId } = req.params;
-  const { rowData } = req.body;
+  const { tableHead, tableRows } = req.body;
 
-  if (!Array.isArray(rowData)) {
-    return res.status(400).json({ error: "Invalid row data format" });
+  if (!Array.isArray(tableHead) || !Array.isArray(tableRows)) {
+    return res.status(400).json({ error: "Invalid table data format" });
   }
 
-  const newId = uuidv4();
-  const rowIndexQuery =
-    "SELECT MAX(rowIndex) as maxRowIndex FROM customTableRows WHERE athleteId = ?";
-  const insertQuery =
-    "INSERT INTO customTableRows (id, athleteId, rowIndex, rowData) VALUES (?, ?, ?, ?)";
+  const processedTableHead = JSON.stringify(tableHead);
+  const processedTableRows = JSON.stringify(tableRows);
+  const query = `
+    INSERT INTO customTable (athleteId, tableHead, tableRows) VALUES (?, ?, ?)
+    ON CONFLICT(athleteId) DO UPDATE SET tableHead = excluded.tableHead, tableRows = excluded.tableRows
+  `;
 
-  athletesDb.get(rowIndexQuery, [athleteId], (err, row) => {
-    if (err) {
-      console.error("Error fetching row index:", err.message);
-      return res.status(500).json({ error: "Failed to fetch row index" });
-    }
-    const rowIndex = (row.maxRowIndex || 0) + 1;
-    const processedRowData = JSON.stringify(rowData);
-
-    athletesDb.run(
-      insertQuery,
-      [newId, athleteId, rowIndex, processedRowData],
-      (err) => {
-        if (err) {
-          console.error("Error inserting new row data:", err.message);
-          return res
-            .status(500)
-            .json({ error: "Failed to insert new row data" });
-        }
-        console.log(`New row added successfully for athlete: ${athleteId}`);
-        res
-          .status(200)
-          .json({ message: "New row added successfully", rowIndex });
+  athletesDb.run(
+    query,
+    [athleteId, processedTableHead, processedTableRows],
+    (err) => {
+      if (err) {
+        console.error("Error saving custom table data:", err.message);
+        return res
+          .status(500)
+          .json({ error: "Failed to save custom table data" });
       }
-    );
-  });
-});
-
-// Save custom table data for an athlete (update an existing row)
-router.put("/:athleteId/custom-table/row/:rowIndex", (req, res) => {
-  const { athleteId, rowIndex } = req.params;
-  const { rowData } = req.body;
-
-  if (!Array.isArray(rowData)) {
-    return res.status(400).json({ error: "Invalid row data format" });
-  }
-
-  const processedRowData = JSON.stringify(rowData);
-  const query =
-    "UPDATE customTableRows SET rowData = ? WHERE athleteId = ? AND rowIndex = ?";
-
-  athletesDb.run(query, [processedRowData, athleteId, rowIndex], (err) => {
-    if (err) {
-      console.error("Error updating custom table row data:", err.message);
-      return res
-        .status(500)
-        .json({ error: "Failed to update custom table row data" });
+      console.log(`Table data saved successfully for athlete: ${athleteId}`);
+      res.status(200).json({ message: "Table data saved successfully" });
     }
-    console.log(
-      `Row ${rowIndex} updated successfully for athlete: ${athleteId}`
-    );
-    res.status(200).json({ message: "Row updated successfully", rowIndex });
-  });
+  );
 });
 
 export default router;

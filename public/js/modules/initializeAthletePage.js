@@ -18,6 +18,9 @@ import { initializeCustomTable } from "./customTable.js";
 export async function initializeAthletePage(athleteId) {
   console.log(`Initializing athlete page for ID: ${athleteId}`);
 
+  // Set the athleteId in the hidden input field
+  document.getElementById("athlete-id").value = athleteId;
+
   await fetchAthleteDetails(athleteId);
   await fetchSupplements(athleteId);
   await fetchTournaments(athleteId);
