@@ -1,6 +1,9 @@
 import express from "express";
 import { clubsAndSportsDb } from "../models/database.js";
 
+// const express = require("express");
+// const { clubsAndSportsDb } = require("../models/database.js");
+
 const router = express.Router();
 
 // Add a new sport

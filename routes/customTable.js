@@ -1,6 +1,9 @@
 import express from "express";
 import { athletesDb } from "../models/database.js";
 
+// const express = require("express");
+// const { athletesDb } = require("../models/database.js");
+
 const router = express.Router();
 
 // Fetch custom table data for an athlete

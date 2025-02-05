@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await initializeAthletePage(athleteId);
 
   // Add save button click event listener
-  const saveButton = document.getElementById("save-button");
+  const saveButton = document.getElementById("import-button");
   if (saveButton) {
     saveButton.addEventListener("click", async () => {
       console.log("Save button clicked");

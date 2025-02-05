@@ -9,6 +9,7 @@ import tournamentsRoutes from "./tournaments.js";
 import historyRoutes from "./history.js";
 import customTableRoutes from "./customTable.js";
 import generalInfoRoutes from "./generalInfo.js";
+import filesRoutes from "./files.js"; // Import the files route
 
 const router = express.Router();
 
@@ -22,4 +23,6 @@ router.use("/athletes", tournamentsRoutes);
 router.use("/athletes", historyRoutes);
 router.use("/athletes", generalInfoRoutes);
 router.use("/athletes", customTableRoutes);
+router.use("/athletes", filesRoutes); // Use the files route
+
 export default router;

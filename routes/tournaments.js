@@ -2,6 +2,10 @@ import express from "express";
 import { athletesDb } from "../models/database.js";
 import { v4 as uuidv4 } from "uuid";
 
+// const express = require("express");
+// const { athletesDb } = require("../models/database.js");
+// const { v4: uuidv4 } = require("uuid");
+
 const router = express.Router();
 
 // Fetch tournaments for an athlete

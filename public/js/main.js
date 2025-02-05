@@ -71,7 +71,10 @@ document.addEventListener("click", (e) => {
     toggleLoading(true); // Show spinner on "View Profile"
     const athleteId = e.target.getAttribute("data-id");
     setTimeout(() => {
-      viewAthlete(athleteId);
+      window.electron.ipcRenderer.send(
+        "navigate",
+        `athlete.html?id=${athleteId}`
+      );
       toggleLoading(false);
     }, 1000); // Delay to show spinner
   } else if (e.target.classList.contains("view-all-button")) {

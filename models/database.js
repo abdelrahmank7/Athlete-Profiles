@@ -3,10 +3,11 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Ensure the directory exists
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataDir = path.join(__dirname, "models/data");
+
+// Ensure the directory exists
+const dataDir = path.join(__dirname, "data");
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
@@ -123,6 +124,17 @@ const createTables = (db) => {
       schema: `
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE
+      `,
+    },
+    {
+      name: "files",
+      schema: `
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        athleteId TEXT,
+        name TEXT,
+        path TEXT,
+        uploadDate TEXT,
+        FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },
   ];

@@ -3,6 +3,11 @@ import { athletesDb, clubsAndSportsDb } from "../models/database.js";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 
+// const express = require("express");
+// const { athletesDb, clubsAndSportsDb } = require("../models/database.js");
+// const { v4: uuidv4 } = require("uuid");
+// const crypto = require("crypto");
+
 const router = express.Router();
 
 // Fetch all athletes

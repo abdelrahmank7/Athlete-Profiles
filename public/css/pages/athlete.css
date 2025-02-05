@@ -54,13 +54,13 @@ body {
     padding: 4px; /* Reduce padding for smaller screens */
   }
 
-  .sticky-save-button {
+  .sticky-import-button {
     padding: 5px 10px; /* Adjust button padding for smaller screens */
   }
 }
 
 /* Sticky Save Button */
-.sticky-save-button {
+.sticky-import-button {
   position: fixed;
   top: 10px;
   right: 10px;
@@ -73,7 +73,7 @@ body {
   cursor: pointer;
 }
 
-.sticky-save-button:hover {
+.sticky-import-button:hover {
   background-color: #0056b3;
 }
 
@@ -173,7 +173,7 @@ body {
 
 /* General Information Styles */
 #athlete-info {
-  margin-top: 20px;
+  margin-top: auto;
 }
 
 #athlete-details p {

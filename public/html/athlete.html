@@ -17,26 +17,34 @@
     </nav>
     <main>
       <h1 id="athlete-name" class="centered">Athlete Details</h1>
-      <button id="save-button" class="sticky-save-button">Save</button>
+      <button id="import-button" class="sticky-import-button">Save</button>
       <!-- General Information Section -->
-      <section id="athlete-info" class="card">
-        <h2>General Information</h2>
-        <div id="athlete-details">
-          <p>
-            <strong>Birthdate:</strong> <span id="athlete-birthdate"></span>
-          </p>
-          <p><strong>Age:</strong> <span id="athlete-age"></span></p>
-          <p><strong>Weight:</strong> <span id="athlete-weight"></span></p>
-          <p>
-            <strong>Target Weight:</strong>
-            <span id="athlete-target-weight"></span>
-          </p>
-          <p><strong>Height:</strong> <span id="athlete-height"></span></p>
-          <p><strong>Club:</strong> <span id="athlete-club"></span></p>
-          <p><strong>Sport:</strong> <span id="athlete-sport"></span></p>
-        </div>
-        <button id="edit-athlete-button">Edit</button>
-      </section>
+      <dev class="grid-container">
+        <section id="athlete-info" class="card">
+          <h2>General Information</h2>
+          <div id="athlete-details">
+            <p>
+              <strong>Birthdate:</strong> <span id="athlete-birthdate"></span>
+            </p>
+            <p><strong>Age:</strong> <span id="athlete-age"></span></p>
+            <p><strong>Weight:</strong> <span id="athlete-weight"></span></p>
+            <p>
+              <strong>Target Weight:</strong>
+              <span id="athlete-target-weight"></span>
+            </p>
+            <p><strong>Height:</strong> <span id="athlete-height"></span></p>
+            <p><strong>Club:</strong> <span id="athlete-club"></span></p>
+            <p><strong>Sport:</strong> <span id="athlete-sport"></span></p>
+          </div>
+          <button id="edit-athlete-button">Edit</button>
+        </section>
+        <section id="athlete-files" class="card">
+          <h2>Tests and Records</h2>
+          <input type="file" id="file-input" multiple />
+          <button id="upload-button">Upload</button>
+          <div id="files-list"></div>
+        </section>
+      </dev>
       <!-- Grid Container for other sections -->
       <div class="grid-container">
         <!-- History Section -->

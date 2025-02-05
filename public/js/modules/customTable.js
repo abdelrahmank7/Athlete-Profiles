@@ -41,7 +41,13 @@ async function loadCustomTableFromServer(athleteId) {
       row.forEach((cellData) => {
         const newCell = newRow.insertCell();
         newCell.contentEditable = "true";
-        newCell.textContent = cellData;
+        newCell.textContent = cellData.text;
+        if (cellData.backgroundColor) {
+          newCell.style.backgroundColor = cellData.backgroundColor;
+        }
+        if (cellData.color) {
+          newCell.style.color = cellData.color;
+        }
         newCell.addEventListener("contextmenu", (event) => {
           event.preventDefault();
           changeCellDesign(newCell);
@@ -91,7 +97,17 @@ export async function saveTableToServer(athleteId) {
     (cell) => cell.textContent.trim()
   );
   const tableRows = Array.from(customTable.querySelectorAll("tbody tr")).map(
-    (tr) => Array.from(tr.cells).map((td) => td.textContent.trim() || "")
+    (tr) =>
+      Array.from(tr.cells).map((td) => {
+        const cellData = { text: td.textContent.trim() || "" };
+        if (td.style.backgroundColor) {
+          cellData.backgroundColor = td.style.backgroundColor;
+        }
+        if (td.style.color) {
+          cellData.color = td.style.color;
+        }
+        return cellData;
+      })
   );
 
   try {
@@ -107,21 +123,17 @@ export async function saveTableToServer(athleteId) {
 
     const result = await response.json();
     console.log("Response from save table:", result);
-    alert("Table data saved successfully.");
   } catch (error) {
     console.error("Error saving table data:", error);
-    alert("Failed to save table data.");
   }
 }
 
 // Function to change cell design to match the head
 function changeCellDesign(cell) {
-  const headRow = document.getElementById("header-row");
-  const cellIndex = Array.from(cell.parentNode.children).indexOf(cell);
-  const headCell = headRow.cells[cellIndex];
-  cell.style.backgroundColor = headCell.style.backgroundColor;
-  cell.style.color = headCell.style.color;
-  cell.style.fontWeight = headCell.style.fontWeight;
+  cell.style.backgroundColor = "#3498db";
+  cell.style.color = "white";
+  cell.style.fontWeight = "bold";
+  saveTableToServer(document.getElementById("athlete-id").value);
 }
 
 // Add row button handler
@@ -138,6 +150,7 @@ document
   .addEventListener("click", async () => {
     const athleteId = document.getElementById("athlete-id").value;
     await saveTableToServer(athleteId);
+    alert("Table data saved successfully.");
   });
 
 // Initialize custom table functionality

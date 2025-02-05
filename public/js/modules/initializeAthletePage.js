@@ -13,6 +13,7 @@ import {
   setupEditAthleteForm,
 } from "./setupForms.js";
 import { initializeCustomTable } from "./customTable.js";
+import { setupFileUpload } from "./importFiles.js";
 
 // Initialize the athlete page with all necessary data and forms
 export async function initializeAthletePage(athleteId) {
@@ -32,4 +33,5 @@ export async function initializeAthletePage(athleteId) {
   setupHistoryForm(athleteId); // Setup the history form
   setupEditAthleteForm(athleteId); // Setup the edit athlete form
   initializeCustomTable(athleteId); // Initialize custom table
+  setupFileUpload(athleteId); // Setup file upload
 }

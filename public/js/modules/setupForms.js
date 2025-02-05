@@ -224,6 +224,7 @@ export function setupEditAthleteForm(athleteId) {
     if (isEditable) {
       // Extract updated details
       const updatedDetails = {
+        name: document.getElementById("athlete-name").textContent,
         birthdate: document.getElementById("athlete-birthdate").textContent,
         weight: document.getElementById("athlete-weight").textContent,
         targetWeight: document.getElementById("athlete-target-weight")

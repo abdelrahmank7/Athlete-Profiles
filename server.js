@@ -13,6 +13,9 @@ import { fileURLToPath } from "url";
 import routes from "./routes/routes.js"; // Import central router
 import listEndpoints from "express-list-endpoints";
 
+import cron from "node-cron"; // Import the cron module for google drive
+import { sync } from "./sync.js"; // Import the sync function for google drive
+
 // Load environment variables
 dotenv.config();
 
@@ -21,7 +24,7 @@ const __dirname = path.dirname(__filename);
 
 async function startExpressServer() {
   const app = express();
-  const port = process.env.PORT || 4000;
+  const port = process.env.PORT || 3001; // Change the port number here
 
   // Middleware
   app.use(compression());
@@ -49,7 +52,7 @@ async function startExpressServer() {
           scriptSrc: ["'self'", "https:", "'unsafe-inline'"],
           styleSrc: ["'self'", "https:", "'unsafe-inline'"],
           imgSrc: ["'self'", "data:"],
-          connectSrc: ["'self'", "http://localhost:4000", "app://localhost"],
+          connectSrc: ["'self'", "http://localhost:3001", "app://localhost"],
           fontSrc: ["'self'", "https:", "data:"],
           objectSrc: ["'none'"],
           upgradeInsecureRequests: [],
@@ -82,6 +85,17 @@ async function startExpressServer() {
   // Serve static files
   app.use(express.static(path.join(__dirname, "public"), { maxAge: "0" }));
 
+  app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "uploads"), { maxAge: "0" })
+  );
+
+  app.use(
+    "/models/data",
+    express.static(path.join(__dirname, "models/data"), { maxAge: "0" })
+  );
+
+  //cache control
   app.use((req, res, next) => {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
     next();
@@ -107,6 +121,14 @@ async function startExpressServer() {
     });
   });
 
+  // schedule sync every every hour
+  cron.schedule("0 * * * *", () => {
+    console.log("Running schedule sync...");
+    sync().catch((error) => {
+      console.error("Error during syncing data:", error);
+    });
+  });
+
   // Start the server
   app.listen(port, () => {
     console.log(`Express server running on http://localhost:${port}`);
@@ -118,4 +140,5 @@ async function startExpressServer() {
 // Initialize and start the server
 startExpressServer().catch((err) => {
   console.error("Failed to start server:", err);
+  process.exit(1); // Ensure the process exits with an error code
 });
