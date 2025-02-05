@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "concurrently \"node server.js\" \"electron .\"",
-    "build": "node build.js"
+    "build": "electron-builder"
   },
   "keywords": [],
   "author": "AK47",
@@ -18,18 +18,15 @@
     "compression": "^1.7.4",
     "connect-redis": "^8.0.1",
     "dotenv": "^16.4.7",
-    "electron": "^34.0.2",
     "express": "^4.21.2",
     "express-list-endpoints": "^7.1.1",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
     "express-winston": "^4.2.0",
-    "googleapis": "^144.0.0",
     "helmet": "^8.0.0",
     "http-proxy-middleware": "^3.0.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "node-cron": "^3.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sqlite3": "^5.1.7",
@@ -41,17 +38,36 @@
     "@babel/preset-react": "^7.26.3",
     "babel-loader": "^9.2.1",
     "concurrently": "^7.6.0",
+    "electron": "^34.0.2",
+    "electron-builder": "^23.6.0",
     "esbuild": "^0.14.0",
     "nodemon": "^2.0.22",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   },
+  "build": {
+    "appId": "com.athletes-profiles",
+    "productName": "Athlete Profiles",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "main.js",
+      "server.js",
+      "models/**/*",
+      "routes/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/assets/images/App-icon.png"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abdelrahmank7/Athlete-Profiles.git"
-  },
-  "bugs": {
-    "url": "https://github.com/abdelrahmank7/Athlete-Profiles/issues"
-  },
-  "homepage": "https://github.com/abdelrahmank7/Athlete-Profiles#readme"
+  }
 }

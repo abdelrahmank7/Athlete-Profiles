@@ -13,9 +13,6 @@ import { fileURLToPath } from "url";
 import routes from "./routes/routes.js"; // Import central router
 import listEndpoints from "express-list-endpoints";
 
-import cron from "node-cron"; // Import the cron module for google drive
-import { sync } from "./sync.js"; // Import the sync function for google drive
-
 // Load environment variables
 dotenv.config();
 
@@ -118,14 +115,6 @@ async function startExpressServer() {
     res.status(500).send({
       status: "error",
       message: "Internal Server Error",
-    });
-  });
-
-  // schedule sync every every hour
-  cron.schedule("0 * * * *", () => {
-    console.log("Running schedule sync...");
-    sync().catch((error) => {
-      console.error("Error during syncing data:", error);
     });
   });
 
