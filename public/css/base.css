@@ -50,3 +50,71 @@ h2 {
 .centered {
   transition: opacity 1s ease-in-out;
 }
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.notifications {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.notifications:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.notifications h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.5em;
+}
+
+.notifications ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.notifications li {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fafafa;
+  margin-bottom: 10px;
+  border-left: 5px solid #ff0000;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.notifications li:last-child {
+  border-bottom: none;
+}
+
+.notifications li:hover {
+  background-color: #f1f1f1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.notifications li a {
+  color: #333;
+  text-decoration: none;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.notifications li a .emoji {
+  margin-left: 10px;
+  font-size: 1.5em;
+}
+
+.notifications li a .notification-content {
+  margin-left: 15px;
+  font-size: 1.2em;
+}

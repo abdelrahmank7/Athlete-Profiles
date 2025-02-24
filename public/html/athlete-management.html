@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Athlete Management</title>
+    <link rel="stylesheet" href="../css/pages/athlete-management.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components/forms.css" />
+    <link rel="stylesheet" href="../css/components/modals.css" />
+    <link rel="stylesheet" href="../css/components/athlete-card.css" />
+    <link rel="stylesheet" href="../css/components/spinner.css" />
+    <link rel="stylesheet" href="../css/pages/home.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./athlete-management.html">Athletes</a>
+    </nav>
+    <header>
+      <h1>Athlete Management</h1>
+    </header>
+
+    <!-- Statistics Section -->
+    <div class="statistics">
+      <canvas id="clubsStatisticsChart"></canvas>
+      <canvas id="sportsStatisticsChart"></canvas>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="search-name" placeholder="Search by name..." />
+      <select id="filter-club">
+        <option value="">All Clubs</option>
+        <!-- Populate with club options -->
+      </select>
+      <select id="filter-sport">
+        <option value="">All Sports</option>
+        <!-- Populate with sport options -->
+      </select>
+      <button id="search-button">Search</button>
+      <select id="sort-tournament-date">
+        <option value="nearest">Sort by Nearest Tournament</option>
+        <option value="oldest">Sort by Oldest Tournament</option>
+      </select>
+    </div>
+
+    <table id="athlete-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Club</th>
+          <th>Sport</th>
+          <th>Tournament Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Populate with athlete rows -->
+      </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/modules/athlete-management.js"></script>
+  </body>
+</html>
