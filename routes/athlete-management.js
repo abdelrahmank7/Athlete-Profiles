@@ -1,14 +1,10 @@
 // routes/athlete-management.js
 import express from "express";
-import {
-  getUserDatabase,
-  centralClubsAndSportsDb,
-} from "../models/database.js";
+import { athletesDb, clubsAndSportsDb } from "../models/database.js";
 import Athlete from "../models/athlete.js";
 
 const router = express.Router();
 
-// Get all athletes with optional filters
 router.get("/", async (req, res) => {
   try {
     const { name, club, sport } = req.query;
@@ -40,13 +36,23 @@ router.get("/", async (req, res) => {
     query += " ORDER BY t.date ASC";
 
     const rows = athletesDb.prepare(query).all(params);
-    const athletes = rows.map((row) => {
-      const athlete = Athlete.fromRow(row);
-      return {
-        ...athlete,
-        tournamentDate: row.tournamentDate,
-      };
-    });
+    if (!Array.isArray(rows)) {
+      throw new Error("Expected rows to be an array");
+    }
+
+    const athletes = rows
+      .map((row) => {
+        const athlete = Athlete.fromRow(row);
+        if (athlete) {
+          return {
+            ...athlete,
+            tournamentDate: row.tournamentDate,
+          };
+        }
+        return null;
+      })
+      .filter((athlete) => athlete !== null); // Add this line to filter out null values
+
     res.json(athletes);
   } catch (err) {
     console.error("Error fetching athletes:", err);

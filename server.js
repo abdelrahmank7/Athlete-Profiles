@@ -109,6 +109,10 @@ async function startExpressServer() {
     res.sendFile(path.join(__dirname, "public/html/athlete.html"));
   });
 
+  app.get("/athlete-management.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public/html/athlete-management.html"));
+  });
+
   // Error handling middleware
   app.use((err, req, res, next) => {
     console.error("Error Message:", err.message);

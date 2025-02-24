@@ -46,7 +46,10 @@ class Athlete {
   }
 
   static fromRow(row) {
-    const athlete = new Athlete(
+    if (!row) {
+      return null; // Handle null row
+    }
+    return new Athlete(
       row.id,
       row.name,
       row.birthdate,
@@ -59,7 +62,6 @@ class Athlete {
       row.fatsPercentage,
       row.musclePercentage
     );
-    return athlete;
   }
 }
 

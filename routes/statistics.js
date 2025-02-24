@@ -1,6 +1,6 @@
 // routes/statistics.js
 import express from "express";
-import { getUserDatabase } from "../models/database.js";
+import { athletesDb, clubsAndSportsDb } from "../models/database.js";
 
 const router = express.Router();
 
@@ -16,6 +16,9 @@ router.get("/", async (req, res) => {
     const clubsStats = athletesDb
       .prepare("SELECT club, COUNT(*) AS count FROM athletes GROUP BY club")
       .all();
+
+    // Log the statistics to verify the response
+    console.log({ totalAthletes, sportsStats, clubsStats });
 
     res.json({
       totalAthletes,

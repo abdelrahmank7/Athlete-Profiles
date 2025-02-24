@@ -1,6 +1,6 @@
 // routes/notifications.js
 import express from "express";
-import { getUserDatabase } from "../models/database.js";
+import { athletesDb, clubsAndSportsDb } from "../models/database.js";
 
 const router = express.Router();
 

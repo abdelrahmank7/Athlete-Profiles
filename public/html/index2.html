@@ -19,16 +19,10 @@
   <body>
     <nav>
       <a href="/">Home</a>
-      <a href="./athlete-management.html">Athletes</a>
+      <a href="./athlete.html">Athletes</a>
     </nav>
     <main>
       <h1 id="main-title" class="centered">Welcome to Athlete Profiles</h1>
-      <section class="notifications">
-        <h2 id="notifications-title">Notifications</h2>
-        <ul id="notifications-list">
-          <!-- notifications populated here-->
-        </ul>
-      </section>
       <div class="grid-container">
         <!-- Select Athlete Section -->
         <section id="athlete-list" class="card">
@@ -133,6 +127,11 @@
           <span class="close-button">&times;</span>
           <div id="alert-message"></div>
         </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loading-spinner" class="spinner" style="display: none">
+        Loading...
       </div>
     </main>
     <script src="../js/main.js" type="module" defer></script>

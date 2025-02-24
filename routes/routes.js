@@ -10,7 +10,9 @@ import historyRoutes from "./history.js";
 import customTableRoutes from "./customTable.js";
 import generalInfoRoutes from "./generalInfo.js";
 import filesRoutes from "./files.js"; // Import the files route
-
+import athletesManagementRoutes from "./athlete-management.js";
+import notificationsRoutes from "./notifications.js";
+import statisticsRoutes from "./statistics.js";
 const router = express.Router();
 
 router.use("/athletes", athletesRoutes);
@@ -23,6 +25,10 @@ router.use("/athletes", tournamentsRoutes);
 router.use("/athletes", historyRoutes);
 router.use("/athletes", generalInfoRoutes);
 router.use("/athletes", customTableRoutes);
+
 router.use("/athletes", filesRoutes); // Use the files route
+router.use("/athlete-management", athletesManagementRoutes);
+router.use("/notifications", notificationsRoutes);
+router.use("/statistics", statisticsRoutes);
 
 export default router;
