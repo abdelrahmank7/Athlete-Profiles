@@ -54,13 +54,13 @@ body {
     padding: 4px; /* Reduce padding for smaller screens */
   }
 
-  .sticky-import-button {
+  .sticky-save-button {
     padding: 5px 10px; /* Adjust button padding for smaller screens */
   }
 }
 
 /* Sticky Save Button */
-.sticky-import-button {
+.sticky-save-button {
   position: fixed;
   top: 10px;
   right: 10px;
@@ -73,7 +73,7 @@ body {
   cursor: pointer;
 }
 
-.sticky-import-button:hover {
+.sticky-save-button:hover {
   background-color: #0056b3;
 }
 
