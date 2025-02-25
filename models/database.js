@@ -12,7 +12,7 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Correct database path
+// Correct database paths
 const dbPath = path.join(dataDir, "database.db");
 const clubsAndSportsDbPath = path.join(dataDir, "clubsAndSports.db");
 
@@ -22,6 +22,26 @@ const clubsAndSportsDb = new Database(clubsAndSportsDbPath);
 
 console.log("Connected to the SQLite database.");
 console.log("Connected to the SQLite clubsAndSports database.");
+
+// Function to wrap better-sqlite3 methods
+const wrapDatabaseMethods = (db) => ({
+  all: (query, params = []) => {
+    const stmt = db.prepare(query);
+    return stmt.all(params);
+  },
+  get: (query, params = []) => {
+    const stmt = db.prepare(query);
+    return stmt.get(params);
+  },
+  run: (query, params = []) => {
+    const stmt = db.prepare(query);
+    return stmt.run(params);
+  },
+});
+
+// Wrap the databases with the custom methods
+// const wrappedAthletesDb = wrapDatabaseMethods(athletesDb);
+// const wrappedClubsAndSportsDb = wrapDatabaseMethods(clubsAndSportsDb);
 
 // Function to create tables
 const createTables = (db) => {
@@ -145,4 +165,5 @@ const createTables = (db) => {
 createTables(athletesDb);
 createTables(clubsAndSportsDb);
 
+// Export the wrapped databases
 export { athletesDb, clubsAndSportsDb };

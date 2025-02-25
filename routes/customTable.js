@@ -1,9 +1,6 @@
 import express from "express";
 import { athletesDb } from "../models/database.js";
 
-// const express = require("express");
-// const { athletesDb } = require("../models/database.js");
-
 const router = express.Router();
 
 // Fetch custom table data for an athlete
@@ -13,13 +10,10 @@ router.get("/:athleteId/custom-table", (req, res) => {
     "SELECT tableHead, tableRows FROM customTable WHERE athleteId = ?";
   console.log(`Fetching custom table data for athlete: ${athleteId}`);
 
-  athletesDb.get(query, [athleteId], (err, row) => {
-    if (err) {
-      console.error("Error fetching custom table data:", err.message);
-      return res
-        .status(500)
-        .json({ error: "Failed to fetch custom table data" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    const row = stmt.get([athleteId]);
+
     if (!row) {
       console.warn(`Custom table data not found for athlete: ${athleteId}`);
       return res.json({
@@ -27,6 +21,7 @@ router.get("/:athleteId/custom-table", (req, res) => {
         tableHead: ["Column 1", "Column 2", "Column 3", "Column 4"],
       });
     }
+
     try {
       const tableHead = JSON.parse(row.tableHead);
       const customTable = JSON.parse(row.tableRows);
@@ -35,7 +30,10 @@ router.get("/:athleteId/custom-table", (req, res) => {
       console.error("Error parsing custom table data:", parseError.message);
       res.status(500).json({ error: "Failed to parse custom table data" });
     }
-  });
+  } catch (err) {
+    console.error("Error fetching custom table data:", err.message);
+    res.status(500).json({ error: "Failed to fetch custom table data" });
+  }
 });
 
 // Save custom table data for an athlete
@@ -49,25 +47,21 @@ router.put("/:athleteId/custom-table", (req, res) => {
 
   const processedTableHead = JSON.stringify(tableHead);
   const processedTableRows = JSON.stringify(tableRows);
+
   const query = `
     INSERT INTO customTable (athleteId, tableHead, tableRows) VALUES (?, ?, ?)
     ON CONFLICT(athleteId) DO UPDATE SET tableHead = excluded.tableHead, tableRows = excluded.tableRows
   `;
 
-  athletesDb.run(
-    query,
-    [athleteId, processedTableHead, processedTableRows],
-    (err) => {
-      if (err) {
-        console.error("Error saving custom table data:", err.message);
-        return res
-          .status(500)
-          .json({ error: "Failed to save custom table data" });
-      }
-      console.log(`Table data saved successfully for athlete: ${athleteId}`);
-      res.status(200).json({ message: "Table data saved successfully" });
-    }
-  );
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run([athleteId, processedTableHead, processedTableRows]);
+    console.log(`Table data saved successfully for athlete: ${athleteId}`);
+    res.status(200).json({ message: "Table data saved successfully" });
+  } catch (err) {
+    console.error("Error saving custom table data:", err.message);
+    res.status(500).json({ error: "Failed to save custom table data" });
+  }
 });
 
 export default router;

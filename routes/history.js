@@ -2,10 +2,6 @@ import express from "express";
 import { athletesDb } from "../models/database.js";
 import { v4 as uuidv4 } from "uuid";
 
-// const express = require("express");
-// const { athletesDb } = require("../models/database.js");
-// const { v4: uuidv4 } = require("uuid");
-
 const router = express.Router();
 
 // Fetch history records for an athlete
@@ -13,13 +9,15 @@ router.get("/:athleteId/history", (req, res) => {
   const { athleteId } = req.params;
   const query = `SELECT * FROM history WHERE athleteId = ?`;
   console.log(`Fetching history records for athlete: ${athleteId}`);
-  athletesDb.all(query, [athleteId], (err, rows) => {
-    if (err) {
-      console.error("Error fetching history records:", err.message);
-      return res.status(500).json({ error: "Failed to fetch history records" });
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    const rows = stmt.all([athleteId]);
     res.json(rows);
-  });
+  } catch (err) {
+    console.error("Error fetching history records:", err.message);
+    res.status(500).json({ error: "Failed to fetch history records" });
+  }
 });
 
 // Add a history record
@@ -49,6 +47,7 @@ router.post("/:athleteId/history", (req, res) => {
     res.status(500).json({ error: "Failed to add history record" });
   }
 });
+
 // Update a history record
 router.put("/:athleteId/history/:historyId", (req, res) => {
   const { athleteId, historyId } = req.params;
@@ -56,6 +55,7 @@ router.put("/:athleteId/history/:historyId", (req, res) => {
 
   let query = `UPDATE history SET `;
   const params = [];
+
   if (date) {
     query += `date = ?, `;
     params.push(date);
@@ -72,6 +72,7 @@ router.put("/:athleteId/history/:historyId", (req, res) => {
     query += `muscle = ?, `;
     params.push(muscle);
   }
+
   query = query.slice(0, -2); // Remove last comma and space
   query += ` WHERE id = ? AND athleteId = ?`;
   params.push(historyId, athleteId);
@@ -89,6 +90,7 @@ router.put("/:athleteId/history/:historyId", (req, res) => {
 // Delete a history record
 router.delete("/:athleteId/history/:historyId", (req, res) => {
   const { athleteId, historyId } = req.params;
+
   console.log("Received athleteId:", athleteId);
   console.log("Received historyId:", historyId);
 

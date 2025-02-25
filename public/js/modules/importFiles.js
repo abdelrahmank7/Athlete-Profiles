@@ -32,6 +32,7 @@ export function setupFileUpload(athleteId) {
       alert("Error uploading files.");
     }
   });
+
   async function fetchUploadedFiles() {
     try {
       const response = await fetch(`/api/athletes/${athleteId}/files`);
@@ -45,6 +46,7 @@ export function setupFileUpload(athleteId) {
       console.error("Error fetching files:", error);
     }
   }
+
   function displayUploadedFiles(files) {
     filesList.innerHTML = "";
     files.forEach((file) => {
