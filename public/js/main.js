@@ -9,6 +9,7 @@ import {
   viewAthlete,
   toggleLoading,
 } from "./modules/helpers.js";
+import { fetchNotifications } from "./modules/notifications.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("App initialized");
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchAndDisplayClubs(); // Fetch and display clubs
   fetchAndDisplaySports(); // Fetch and display sports
   fetchAndDisplayAthletes();
+  fetchNotifications(); // Fetch notifications
 
   // Attach the toggleLoading function to the global window object
   window.toggleLoading = toggleLoading;

@@ -43,18 +43,18 @@ router.post("/:athleteId/supplements", (req, res) => {
 
   console.log("Executing query with params:", params); // Log query and params
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error adding supplement:", err.message); // Log detailed error message
-      return res.status(500).json({ error: "Failed to add supplement" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(201).json({
       message: "Supplement added successfully",
       id: supplementId,
     });
-  });
+  } catch (err) {
+    console.error("Error adding supplement:", err.message); // Log detailed error message
+    res.status(500).json({ error: "Failed to add supplement" });
+  }
 });
-
 // Update a supplement
 router.put("/:athleteId/supplements/:supplementId", (req, res) => {
   const { athleteId, supplementId } = req.params;
@@ -69,15 +69,15 @@ router.put("/:athleteId/supplements/:supplementId", (req, res) => {
 
   console.log("Executing query with params:", params); // Log query and params
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error updating supplement:", err.message); // Log detailed error message
-      return res.status(500).json({ error: "Failed to update supplement" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "Supplement updated successfully" });
-  });
+  } catch (err) {
+    console.error("Error updating supplement:", err.message); // Log detailed error message
+    res.status(500).json({ error: "Failed to update supplement" });
+  }
 });
-
 // Delete a supplement from an athlete
 router.delete("/:athleteId/supplements/:supplementId", (req, res) => {
   const { athleteId, supplementId } = req.params;

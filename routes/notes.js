@@ -25,13 +25,14 @@ router.post("/:id/notes", (req, res) => {
   `;
   const params = [noteId, id, note, date];
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error adding note:", err);
-      return res.status(500).json({ error: "Failed to add note" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(201).json({ message: "Note added successfully", id: noteId });
-  });
+  } catch (err) {
+    console.error("Error adding note:", err.message);
+    res.status(500).json({ error: "Failed to add note" });
+  }
 });
 
 // Update a note
@@ -40,12 +41,15 @@ router.put("/:athleteId/notes/:noteId", (req, res) => {
   const { note } = req.body;
   const query = "UPDATE notes SET note = ? WHERE id = ? AND athleteId = ?";
 
-  athletesDb.run(query, [note, noteId, athleteId], function (err) {
-    if (err) {
-      return res.status(500).json({ error: "Failed to update note" });
-    }
+  const params = [note, noteId, athleteId];
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "Note updated successfully" });
-  });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update note" });
+  }
 });
 
 // Delete a note from an athlete
@@ -58,15 +62,29 @@ router.delete("/:athleteId/notes/:noteId", (req, res) => {
   `;
   const params = [noteId, athleteId];
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error deleting note:", err);
-      return res.status(500).json({ error: "Failed to delete note" });
-    }
-    res.status(200).json({ message: "Note deleted successfully" });
-  });
-});
+  try {
+    const stmt = athletesDb.prepare(query);
+    const result = stmt.run(params);
 
+    if (result.changes === 0) {
+      console.warn(
+        `No record found with id: ${noteId} and athleteId: ${athleteId}`
+      );
+      return res.status(404).json({
+        status: "error",
+        message: "Note not found",
+      });
+    }
+
+    res.status(200).json({ message: "Note deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting note:", err.message);
+    res.status(500).json({
+      status: "error",
+      message: `Database error occurred during deletion: ${err.message}`,
+    });
+  }
+});
 // Fetch notes for an athlete
 router.get("/:id/notes", (req, res) => {
   const { id } = req.params;

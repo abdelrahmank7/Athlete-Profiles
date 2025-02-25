@@ -26,17 +26,18 @@ router.put("/:athleteId/general-info", (req, res) => {
     athleteId,
   ];
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error updating general athlete information:", err.message);
-      return res
-        .status(500)
-        .json({ error: "Failed to update general athlete information" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res
       .status(200)
       .json({ message: "General athlete information updated successfully" });
-  });
+  } catch (err) {
+    console.error("Error updating general athlete information:", err.message);
+    res
+      .status(500)
+      .json({ error: "Failed to update general athlete information" });
+  }
 });
 
 export default router;

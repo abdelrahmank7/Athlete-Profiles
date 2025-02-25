@@ -3,11 +3,6 @@ import { athletesDb, clubsAndSportsDb } from "../models/database.js";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 
-// const express = require("express");
-// const { athletesDb, clubsAndSportsDb } = require("../models/database.js");
-// const { v4: uuidv4 } = require("uuid");
-// const crypto = require("crypto");
-
 const router = express.Router();
 
 // Fetch all athletes
@@ -17,29 +12,35 @@ router.get("/", (req, res) => {
   if (name) query.name = new RegExp(name, "i");
   if (sport) query.sport = sport;
   if (club) query.club = club;
-  athletesDb.all("SELECT * FROM athletes", [], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: "Failed to fetch athletes" });
-      return;
-    }
+
+  const queryStr = "SELECT * FROM athletes";
+  try {
+    const stmt = athletesDb.prepare(queryStr);
+    const rows = stmt.all();
     res.json(rows);
-  });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch athletes" });
+  }
 });
+
 // Fetch specific athlete by ID
 router.get("/:id", (req, res) => {
   const query = "SELECT * FROM athletes WHERE id = ?";
-  athletesDb.get(query, [req.params.id], (err, row) => {
-    if (err) {
-      res.status(500).json({ error: "Failed to fetch athlete" });
-      return;
-    }
+  const params = [req.params.id];
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    const row = stmt.get(params);
     if (!row) {
       res.status(404).json({ error: "Athlete not found" });
-      return;
+    } else {
+      res.json(row);
     }
-    res.json(row);
-  });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch athlete" });
+  }
 });
+
 // Update athlete data
 router.post("/:id/update", (req, res) => {
   const { id } = req.params;
@@ -55,6 +56,7 @@ router.post("/:id/update", (req, res) => {
     fatsPercentage,
     musclePercentage,
   } = req.body;
+
   const query = `
     UPDATE athletes
     SET name = ?, birthdate = ?, weight = ?, targetWeight = ?, height = ?, club = ?, sport = ?, currentWeight = ?, fatsPercentage = ?, musclePercentage = ?
@@ -73,14 +75,17 @@ router.post("/:id/update", (req, res) => {
     musclePercentage,
     id,
   ];
-  athletesDb.run(query, params, (err) => {
-    if (err) {
-      res.status(500).json({ error: "Failed to update athlete data" });
-      return;
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.json({ message: "Athlete data updated successfully" });
-  });
+  } catch (err) {
+    console.error("Error updating athlete data:", err.message);
+    res.status(500).json({ error: "Failed to update athlete data" });
+  }
 });
+
 // Add a new athlete
 router.post("/", (req, res) => {
   const {
@@ -96,6 +101,7 @@ router.post("/", (req, res) => {
     musclePercentage,
   } = req.body;
   const id = uuidv4();
+
   const query = `
     INSERT INTO athletes (id, name, birthdate, weight, targetWeight, height, club, sport, currentWeight, fatsPercentage, musclePercentage)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -113,52 +119,59 @@ router.post("/", (req, res) => {
     fatsPercentage,
     musclePercentage,
   ];
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      res.status(500).json({ error: "Failed to add athlete" });
-      return;
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(201).json({ id, ...req.body });
-  });
+  } catch (err) {
+    console.error("Error adding athlete:", err.message);
+    res.status(500).json({ error: "Failed to add athlete" });
+  }
 });
+
 // Add a new club
 router.post("/clubs", (req, res) => {
   const { club } = req.body;
   if (!club) return res.status(400).json({ error: "Club name is required" });
-  clubsAndSportsDb.run(
-    `
+
+  const query = `
     INSERT INTO clubs (name)
     VALUES (?)
-  `,
-    [club],
-    (err) => {
-      if (err) {
-        console.error("Error adding club:", err.message);
-        return res.status(500).json({ error: "Failed to add club" });
-      }
-      res.status(201).json({ message: "Club added successfully" });
-    }
-  );
+  `;
+  const params = [club];
+
+  try {
+    const stmt = clubsAndSportsDb.prepare(query);
+    stmt.run(params);
+    res.status(201).json({ message: "Club added successfully" });
+  } catch (err) {
+    console.error("Error adding club:", err.message);
+    res.status(500).json({ error: "Failed to add club" });
+  }
 });
+
 // Add a new sport
 router.post("/sports", (req, res) => {
   const { sport } = req.body;
   if (!sport) return res.status(400).json({ error: "Sport name is required" });
-  clubsAndSportsDb.run(
-    `
+
+  const query = `
     INSERT INTO sports (name)
     VALUES (?)
-  `,
-    [sport],
-    (err) => {
-      if (err) {
-        console.error("Error adding sport:", err.message);
-        return res.status(500).json({ error: "Failed to add sport" });
-      }
-      res.status(201).json({ message: "Sport added successfully" });
-    }
-  );
+  `;
+  const params = [sport];
+
+  try {
+    const stmt = clubsAndSportsDb.prepare(query);
+    stmt.run(params);
+    res.status(201).json({ message: "Sport added successfully" });
+  } catch (err) {
+    console.error("Error adding sport:", err.message);
+    res.status(500).json({ error: "Failed to add sport" });
+  }
 });
+
 // Get all clubs and sports
 router.get("/filters", (req, res) => {
   clubsAndSportsDb.all("SELECT * FROM clubsAndSports", [], (err, docs) => {
@@ -192,13 +205,13 @@ router.post("/:id/appointments", (req, res) => {
   `;
   const params = [appointmentId, id, date, tournamentName];
 
-  athletesDb.run(query, params, (err) => {
-    if (err) {
-      res.status(500).json({ error: "Failed to add appointment" });
-      return;
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(201).json({ message: "Appointment added successfully" });
-  });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add appointment" });
+  }
 });
 // Delete an appointment from an athlete
 router.delete("/:athleteId/appointments/:appointmentId", (req, res) => {
@@ -208,19 +221,21 @@ router.delete("/:athleteId/appointments/:appointmentId", (req, res) => {
     WHERE athleteId = ? AND id = ?
   `;
   const params = [athleteId, appointmentId];
-  athletesDb.run(query, params, (err) => {
-    if (err) {
-      res.status(500).json({ error: "Failed to delete appointment" });
-      return;
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "Appointment deleted successfully" });
-  });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete appointment" });
+  }
 });
 // Update additional information for an athlete
 router.post("/:id/additional-info", (req, res) => {
   const { id } = req.params;
   const { currentWeight, fatsPercentage, musclePercentage } = req.body;
   const date = new Date().toISOString().split("T")[0];
+
   if (!currentWeight || !fatsPercentage || !musclePercentage) {
     return res
       .status(400)
@@ -252,22 +267,22 @@ router.post("/:id/additional-info", (req, res) => {
     musclePercentage,
   ];
 
-  athletesDb.run(updateDataQuery, updateDataParams, (err) => {
-    if (err) {
-      console.error("Error updating additional information:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-    athletesDb.run(historyRecordQuery, historyRecordParams, (err) => {
-      if (err) {
-        console.error("Error adding to history:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-      res
-        .status(200)
-        .json({ message: "Additional information updated successfully" });
-    });
-  });
+  try {
+    const updateStmt = athletesDb.prepare(updateDataQuery);
+    updateStmt.run(updateDataParams);
+
+    const historyStmt = athletesDb.prepare(historyRecordQuery);
+    historyStmt.run(historyRecordParams);
+
+    res
+      .status(200)
+      .json({ message: "Additional information updated successfully" });
+  } catch (err) {
+    console.error("Error updating additional information:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
+
 // Delete a history record from an athlete
 router.delete("/:athleteId/history/:recordId", (req, res) => {
   const { athleteId, recordId } = req.params;
@@ -276,14 +291,35 @@ router.delete("/:athleteId/history/:recordId", (req, res) => {
     WHERE athleteId = ? AND id = ?
   `;
   const params = [athleteId, recordId];
-  athletesDb.run(query, params, (err) => {
-    if (err) {
-      res.status(500).json({ error: "Failed to delete history record" });
-      return;
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "History record deleted successfully" });
-  });
+  } catch (err) {
+    console.error("Error deleting history record:", err.message);
+    res.status(500).json({ error: "Failed to delete history record" });
+  }
 });
+
+// Delete a history record from an athlete
+router.delete("/:athleteId/history/:recordId", (req, res) => {
+  const { athleteId, recordId } = req.params;
+  const query = `
+    DELETE FROM history
+    WHERE athleteId = ? AND id = ?
+  `;
+  const params = [athleteId, recordId];
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
+    res.status(200).json({ message: "History record deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete history record" });
+  }
+});
+
 // Save custom table data for an athlete
 router.post("/:id/custom-table", (req, res) => {
   const { id } = req.params;
@@ -294,12 +330,15 @@ router.post("/:id/custom-table", (req, res) => {
     WHERE id = ?
   `;
   const params = [tableData, id];
-  athletesDb.run(query, params, (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to save table data" });
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "Table data saved successfully" });
-  });
+  } catch (err) {
+    console.error("Error saving table data:", err.message);
+    res.status(500).json({ error: "Failed to save table data" });
+  }
 });
 
 export default router;

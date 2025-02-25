@@ -1,7 +1,7 @@
-import sqlite3 from "sqlite3";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import Database from "better-sqlite3";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,23 +14,14 @@ if (!fs.existsSync(dataDir)) {
 
 // Correct database path
 const dbPath = path.join(dataDir, "database.db");
-const athletesDb = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error("Error opening athletes database:", err.message);
-  } else {
-    console.log("Connected to the SQLite database.");
-  }
-});
-
-// Create and connect to the SQLite database for clubs and sports
 const clubsAndSportsDbPath = path.join(dataDir, "clubsAndSports.db");
-const clubsAndSportsDb = new sqlite3.Database(clubsAndSportsDbPath, (err) => {
-  if (err) {
-    console.error("Error opening clubsAndSports database:", err.message);
-  } else {
-    console.log("Connected to the SQLite clubsAndSports database.");
-  }
-});
+
+// Initialize databases
+const athletesDb = new Database(dbPath);
+const clubsAndSportsDb = new Database(clubsAndSportsDbPath);
+
+console.log("Connected to the SQLite database.");
+console.log("Connected to the SQLite clubsAndSports database.");
 
 // Function to create tables
 const createTables = (db) => {
@@ -141,18 +132,17 @@ const createTables = (db) => {
 
   tables.forEach(({ name, schema }) => {
     const query = `CREATE TABLE IF NOT EXISTS ${name} (${schema})`;
-    db.run(query, (err) => {
-      if (err) {
-        console.error(`Error creating table ${name}:`, err.message);
-      } else {
-        console.log(`Table ${name} ensured.`);
-      }
-    });
+    try {
+      db.exec(query); // Use .exec() for DDL queries
+      console.log(`Table ${name} ensured.`);
+    } catch (err) {
+      console.error(`Error creating table ${name}:`, err.message);
+    }
   });
 };
 
 // Initialize the tables if they don't exist in both databases
-athletesDb.serialize(() => createTables(athletesDb));
-clubsAndSportsDb.serialize(() => createTables(clubsAndSportsDb));
+createTables(athletesDb);
+createTables(clubsAndSportsDb);
 
 export { athletesDb, clubsAndSportsDb };

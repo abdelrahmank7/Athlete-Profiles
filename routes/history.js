@@ -38,17 +38,17 @@ router.post("/:athleteId/history", (req, res) => {
   `;
   const params = [historyId, athleteId, date, weight, fats, muscle];
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error adding history record:", err);
-      return res.status(500).json({ error: "Failed to add history record" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res
       .status(201)
       .json({ message: "History record added successfully", id: historyId });
-  });
+  } catch (err) {
+    console.error("Error adding history record:", err.message);
+    res.status(500).json({ error: "Failed to add history record" });
+  }
 });
-
 // Update a history record
 router.put("/:athleteId/history/:historyId", (req, res) => {
   const { athleteId, historyId } = req.params;
@@ -76,13 +76,14 @@ router.put("/:athleteId/history/:historyId", (req, res) => {
   query += ` WHERE id = ? AND athleteId = ?`;
   params.push(historyId, athleteId);
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error updating history record:", err.message);
-      return res.status(500).json({ error: "Failed to update history record" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "History record updated successfully" });
-  });
+  } catch (err) {
+    console.error("Error updating history record:", err.message);
+    res.status(500).json({ error: "Failed to update history record" });
+  }
 });
 
 // Delete a history record
@@ -99,16 +100,11 @@ router.delete("/:athleteId/history/:historyId", (req, res) => {
 
   console.log("Running DELETE query with params:", params);
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error deleting history record:", err.message);
-      console.error("Detailed Error:", err);
-      return res.status(500).json({
-        status: "error",
-        message: `Database error occurred during deletion: ${err.message}`,
-      });
-    }
-    if (this.changes === 0) {
+  try {
+    const stmt = athletesDb.prepare(query);
+    const result = stmt.run(params);
+
+    if (result.changes === 0) {
       console.warn(
         `No record found with id: ${historyId} and athleteId: ${athleteId}`
       );
@@ -117,9 +113,17 @@ router.delete("/:athleteId/history/:historyId", (req, res) => {
         message: "History record not found",
       });
     }
+
     console.log(`Successfully deleted history record with id: ${historyId}`);
     res.status(200).json({ message: "History record deleted successfully" });
-  });
+  } catch (err) {
+    console.error("Error deleting history record:", err.message);
+    console.error("Detailed Error:", err);
+    res.status(500).json({
+      status: "error",
+      message: `Database error occurred during deletion: ${err.message}`,
+    });
+  }
 });
 
 export default router;

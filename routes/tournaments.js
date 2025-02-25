@@ -2,10 +2,6 @@ import express from "express";
 import { athletesDb } from "../models/database.js";
 import { v4 as uuidv4 } from "uuid";
 
-// const express = require("express");
-// const { athletesDb } = require("../models/database.js");
-// const { v4: uuidv4 } = require("uuid");
-
 const router = express.Router();
 
 // Fetch tournaments for an athlete
@@ -13,13 +9,15 @@ router.get("/:athleteId/tournaments", (req, res) => {
   const { athleteId } = req.params;
 
   const query = `SELECT * FROM tournaments WHERE athleteId = ?`;
-  athletesDb.all(query, [athleteId], (err, rows) => {
-    if (err) {
-      console.error("Error fetching tournaments:", err.message);
-      return res.status(500).json({ error: "Failed to fetch tournaments" });
-    }
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    const rows = stmt.all(athleteId);
     res.json(rows);
-  });
+  } catch (err) {
+    console.error("Error fetching tournaments:", err.message);
+    res.status(500).json({ error: "Failed to fetch tournaments" });
+  }
 });
 
 // Add a tournament to an athlete
@@ -45,16 +43,17 @@ router.post("/:athleteId/tournaments", (req, res) => {
 
   console.log("Executing query with params:", params); // Log query and params
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error adding tournament:", err.message); // Log detailed error message
-      return res.status(500).json({ error: "Failed to add tournament" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(201).json({
       message: "Tournament added successfully",
       id: tournamentId,
     });
-  });
+  } catch (err) {
+    console.error("Error adding tournament:", err.message); // Log detailed error message
+    res.status(500).json({ error: "Failed to add tournament" });
+  }
 });
 
 // Update a tournament
@@ -71,29 +70,40 @@ router.put("/:athleteId/tournaments/:tournamentId", (req, res) => {
 
   console.log("Executing query with params:", params); // Log query and params
 
-  athletesDb.run(query, params, function (err) {
-    if (err) {
-      console.error("Error updating tournament:", err.message); // Log detailed error message
-      return res.status(500).json({ error: "Failed to update tournament" });
-    }
+  try {
+    const stmt = athletesDb.prepare(query);
+    stmt.run(params);
     res.status(200).json({ message: "Tournament updated successfully" });
-  });
+  } catch (err) {
+    console.error("Error updating tournament:", err.message); // Log detailed error message
+    res.status(500).json({ error: "Failed to update tournament" });
+  }
 });
 
 // Delete a tournament from an athlete
 router.delete("/:athleteId/tournaments/:tournamentId", (req, res) => {
   const { athleteId, tournamentId } = req.params;
-  athletesDb.run(
-    `DELETE FROM tournaments WHERE id = ? AND athleteId = ?`,
-    [tournamentId, athleteId],
-    (err) => {
-      if (err) {
-        console.error("Error deleting tournament:", err.message); // Log detailed error message
-        return res.status(500).json({ error: "Failed to delete tournament" });
-      }
-      res.status(200).json({ message: "Tournament deleted successfully" });
+  const query = `DELETE FROM tournaments WHERE id = ? AND athleteId = ?`;
+  const params = [tournamentId, athleteId];
+
+  console.log("Executing query with params:", params); // Log query and params
+
+  try {
+    const stmt = athletesDb.prepare(query);
+    const result = stmt.run(params);
+
+    if (result.changes === 0) {
+      console.warn(
+        `No record found with id: ${tournamentId} and athleteId: ${athleteId}`
+      );
+      return res.status(404).json({ error: "Tournament not found" });
     }
-  );
+
+    res.status(200).json({ message: "Tournament deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting tournament:", err.message); // Log detailed error message
+    res.status(500).json({ error: "Failed to delete tournament" });
+  }
 });
 
 export default router;

@@ -1,9 +1,6 @@
 import express from "express";
 import { clubsAndSportsDb } from "../models/database.js";
 
-// const express = require("express");
-// const { clubsAndSportsDb } = require("../models/database.js");
-
 const router = express.Router();
 
 // Add a new club
@@ -15,25 +12,29 @@ router.post("/", (req, res) => {
     INSERT INTO clubs (name)
     VALUES (?)
   `;
-  clubsAndSportsDb.run(query, [club], (err) => {
-    if (err) {
-      console.error("Error adding club:", err.message);
-      return res.status(500).json({ error: "Failed to add club" });
-    }
+
+  try {
+    const stmt = clubsAndSportsDb.prepare(query);
+    stmt.run([club]);
     res.status(201).json({ message: "Club added successfully" });
-  });
+  } catch (err) {
+    console.error("Error adding club:", err.message);
+    res.status(500).json({ error: "Failed to add club" });
+  }
 });
 
 // Fetch all clubs
 router.get("/", (req, res) => {
   const query = "SELECT * FROM clubs";
-  clubsAndSportsDb.all(query, [], (err, rows) => {
-    if (err) {
-      console.error("Error fetching clubs:", err.message);
-      return res.status(500).json({ error: "Failed to fetch clubs" });
-    }
+
+  try {
+    const stmt = clubsAndSportsDb.prepare(query);
+    const rows = stmt.all();
     res.status(200).json(rows);
-  });
+  } catch (err) {
+    console.error("Error fetching clubs:", err.message);
+    res.status(500).json({ error: "Failed to fetch clubs" });
+  }
 });
 
 export default router;
