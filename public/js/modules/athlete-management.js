@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
   });
+
   // Fetch and display statistics
   const fetchStatistics = async () => {
     try {
@@ -156,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let newColor = (g | (b << 8) | (r << 16)).toString(16);
     return (usePound ? "#" : "") + newColor;
   };
+
   // Fetch clubs and populate the dropdown
   const fetchClubs = async () => {
     try {
@@ -236,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     addEventListeners();
   };
+
   const sortAthletes = (athletes) => {
     const sortValue = sortTournamentDateSelect.value;
     return athletes.sort((a, b) => {
@@ -273,18 +276,40 @@ document.addEventListener("DOMContentLoaded", () => {
         const athleteName = event.target
           .closest("tr")
           .querySelector("td").textContent;
+
+        // Show confirmation dialog
         const confirmed = confirm(
           `Are you sure you want to remove ${athleteName}?`
         );
-        if (confirmed) {
+        if (!confirmed) return; // Exit if the user cancels
+
+        try {
           const response = await fetch(`/api/athlete-management/${athleteId}`, {
             method: "DELETE",
           });
+
           if (response.ok) {
-            fetchAthletes();
+            // Athlete successfully deleted
+            alert(`${athleteName} has been successfully removed.`);
+            fetchAthletes(); // Refresh the list of athletes
+          } else if (response.status === 409) {
+            // Athlete has tournaments and cannot be deleted
+            const errorMessage = await response.text();
+            alert(
+              errorMessage ||
+                "This athlete has tournaments and cannot be deleted."
+            );
+          } else if (response.status === 404) {
+            // Athlete not found
+            alert("Athlete not found.");
           } else {
+            // Handle other errors
             console.error(`Failed to delete athlete: ${response.statusText}`);
+            alert("An unexpected error occurred while deleting the athlete.");
           }
+        } catch (error) {
+          console.error("Error during deletion:", error);
+          alert("An error occurred while trying to delete the athlete.");
         }
       });
     });

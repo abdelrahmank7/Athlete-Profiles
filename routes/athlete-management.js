@@ -1,10 +1,11 @@
 // routes/athlete-management.js
 import express from "express";
-import { athletesDb, clubsAndSportsDb } from "../models/database.js";
+import { athletesDb } from "../models/database.js"; // Ensure this is correctly imported
 import Athlete from "../models/athlete.js";
 
 const router = express.Router();
 
+// Fetch athletes with optional filters
 router.get("/", async (req, res) => {
   try {
     const { name, club, sport } = req.query;
@@ -15,7 +16,6 @@ router.get("/", async (req, res) => {
     `;
     const conditions = [];
     const params = [];
-
     if (name) {
       conditions.push("a.name LIKE ?");
       params.push(`%${name}%`);
@@ -28,18 +28,14 @@ router.get("/", async (req, res) => {
       conditions.push("a.sport = ?");
       params.push(sport);
     }
-
     if (conditions.length > 0) {
       query += " WHERE " + conditions.join(" AND ");
     }
-
     query += " ORDER BY t.date ASC";
-
     const rows = athletesDb.prepare(query).all(params);
     if (!Array.isArray(rows)) {
       throw new Error("Expected rows to be an array");
     }
-
     const athletes = rows
       .map((row) => {
         const athlete = Athlete.fromRow(row);
@@ -51,12 +47,11 @@ router.get("/", async (req, res) => {
         }
         return null;
       })
-      .filter((athlete) => athlete !== null); // Add this line to filter out null values
-
+      .filter((athlete) => athlete !== null); // Filter out null values
     res.json(athletes);
   } catch (err) {
     console.error("Error fetching athletes:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "An internal server error occurred" });
   }
 });
 
@@ -64,19 +59,51 @@ router.get("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Validate the ID parameter
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ message: "Invalid athlete ID" });
+    }
+
     console.log(`Attempting to delete athlete with ID: ${id}`);
-    const result = athletesDb
-      .prepare("DELETE FROM athletes WHERE id = ?")
-      .run(id);
-    console.log(`DELETE result: ${JSON.stringify(result)}`);
-    if (result.changes === 0) {
+
+    // Define dependent tables
+    const dependentTables = [
+      "notes",
+      "supplements",
+      "tournaments",
+      "appointments",
+      "history",
+      "customTable",
+      "files",
+    ];
+
+    // Delete related records in dependent tables
+    for (const table of dependentTables) {
+      const deleteQuery = `DELETE FROM ${table} WHERE athleteId = ?`;
+      const deleteStmt = athletesDb.prepare(deleteQuery);
+      const result = deleteStmt.run(id);
+      console.log(
+        `Deleted ${result.changes} records from ${table} for athlete ID: ${id}`
+      );
+    }
+
+    // Proceed to delete the athlete
+    const deleteAthleteQuery = "DELETE FROM athletes WHERE id = ?";
+    const deleteAthleteStmt = athletesDb.prepare(deleteAthleteQuery);
+    const athleteResult = deleteAthleteStmt.run(id);
+
+    if (athleteResult.changes === 0) {
       console.warn(`Athlete with ID: ${id} not found.`);
       return res.status(404).json({ message: "Athlete not found" });
     }
-    res.json({ message: "Athlete removed" });
+
+    res.json({
+      message: "Athlete and all related records removed successfully",
+    });
   } catch (err) {
     console.error("Error deleting athlete:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "An internal server error occurred" });
   }
 });
 

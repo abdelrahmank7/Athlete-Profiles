@@ -51,11 +51,9 @@ export async function fetchAndDisplayAthletes(filters = {}) {
     console.log("Filters applied:", filters); // Log the applied filters
     const queryParams = new URLSearchParams(filters);
     const res = await fetch(`/api/athletes?${queryParams.toString()}`);
-
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-
     const athletes = await res.json(); // Directly parse the response as JSON
     console.log("Received athletes data:", athletes); // Log the received data
 
@@ -64,14 +62,20 @@ export async function fetchAndDisplayAthletes(filters = {}) {
       return; // Exit the function if the data is not an array
     }
 
+    // Reverse the athletes array so the most recent athlete is at the top
+    const reversedAthletes = [...athletes].reverse(); // Use a shallow copy to avoid mutating the original array
+    console.log("Reversed athletes data:", reversedAthletes); // Log the reversed athletes
+
     const results = document.getElementById("results");
     if (!results) {
       console.error("Error: results element not found.");
       return;
     }
+
     results.innerHTML = ""; // Clear existing results
 
-    const filteredAthletes = athletes.filter((athlete) => {
+    // Apply filters on the reversed array
+    const filteredAthletes = reversedAthletes.filter((athlete) => {
       const matchesName = filters.name
         ? athlete.name.toLowerCase().includes(filters.name.toLowerCase())
         : true;
@@ -86,7 +90,10 @@ export async function fetchAndDisplayAthletes(filters = {}) {
 
     console.log("Filtered athletes data:", filteredAthletes); // Log the filtered athletes
 
+    // Display the first 4 athletes
     const athletesToDisplay = filteredAthletes.slice(0, 4);
+
+    // Handle additional athletes if there are more than 4
     const additionalAthletes =
       filteredAthletes.length > 4 ? filteredAthletes.slice(4) : [];
 
@@ -98,10 +105,12 @@ export async function fetchAndDisplayAthletes(filters = {}) {
       return;
     }
 
+    // Append athlete cards to the results container
     athletesToDisplay.forEach((athlete) => {
       results.appendChild(createAthleteCard(athlete));
     });
 
+    // Add "View All" button if there are additional athletes
     if (additionalAthletes.length > 0) {
       const viewAllButton = document.createElement("button");
       viewAllButton.className = "view-all-button";
@@ -112,6 +121,7 @@ export async function fetchAndDisplayAthletes(filters = {}) {
       results.appendChild(viewAllButton);
     }
 
+    // Add event listeners for "View Profile" buttons
     addViewProfileButtonListeners();
   } catch (error) {
     console.error("Error fetching athletes:", error);

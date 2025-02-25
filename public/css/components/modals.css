@@ -20,7 +20,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   color: var(--text-color);
   width: 90%;
-  max-width: fit-content;
+  max-width: webkit-fill-available;
   max-height: 80%;
   overflow-y: auto;
   animation: slideInFromBottom 0.5s ease-out;
