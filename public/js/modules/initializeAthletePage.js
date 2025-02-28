@@ -14,6 +14,7 @@ import {
 } from "./setupForms.js";
 import { initializeCustomTable } from "./customTable.js";
 import { setupFileUpload } from "./importFiles.js";
+import { initializeSaveButton } from "./export.js";
 
 // Initialize the athlete page with all necessary data and forms
 export async function initializeAthletePage(athleteId) {
@@ -27,6 +28,7 @@ export async function initializeAthletePage(athleteId) {
   await fetchTournaments(athleteId);
   await fetchNotes(athleteId);
   await fetchHistory(athleteId); // Ensure this function is called
+  initializeSaveButton(); // Initialize the save button
   setupNoteForm(athleteId);
   setupSupplementForm(athleteId);
   setupTournamentForm(athleteId);

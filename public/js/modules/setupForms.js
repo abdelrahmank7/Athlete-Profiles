@@ -28,9 +28,16 @@ export function setupNoteForm(athleteId) {
 // Function to add a note to the page
 export function addNoteToPage(athleteId, note, date, noteId = null) {
   const notesContent = document.getElementById("notes-content");
+
+  if (!notesContent) {
+    console.error("notes-content element not found");
+    return;
+  }
+
   const noteElement = document.createElement("div");
   const formattedDate = date || new Date().toISOString().split("T")[0];
 
+  // Create the HTML structure for the note
   noteElement.innerHTML = `
       <p class="note-text">${formattedDate}: ${note}</p>
       <div class="button-container">
@@ -38,7 +45,6 @@ export function addNoteToPage(athleteId, note, date, noteId = null) {
         <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
       </div>
     `;
-  notesContent.appendChild(noteElement);
 
   // Add event listener for the remove button
   noteElement
@@ -58,7 +64,6 @@ export function addNoteToPage(athleteId, note, date, noteId = null) {
       event.preventDefault();
       const noteText = noteElement.querySelector(".note-text");
       const editButton = noteElement.querySelector(".edit-button img");
-
       if (noteText.contentEditable === "true") {
         noteText.contentEditable = "false";
         editButton.src = "../assets/images/edit-icon.png";
@@ -72,11 +77,15 @@ export function addNoteToPage(athleteId, note, date, noteId = null) {
       }
     });
 
+  // Save the note to the server if it's a new note
   if (!noteId) {
     saveNoteToServer(athleteId, note, formattedDate, (id) => {
-      noteId = id;
+      noteId = id; // Update the noteId after saving to the server
     });
   }
+
+  // Insert the new note at the beginning of the notes-content container
+  notesContent.insertBefore(noteElement, notesContent.firstChild);
 }
 
 // Function to save the note to the server

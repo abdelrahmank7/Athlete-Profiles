@@ -31,9 +31,16 @@ export function addHistoryRecordToPage(
   recordId = null
 ) {
   const historyContent = document.getElementById("history-content");
+
+  if (!historyContent) {
+    console.error("history-content element not found");
+    return;
+  }
+
   const historyElement = document.createElement("div");
   const formattedDate = date || new Date().toISOString().split("T")[0];
 
+  // Create the HTML structure for the history record
   historyElement.innerHTML = `
     <p class="history-text">${formattedDate}: Weight: ${weight} kg, Fats: ${fats}%, Muscle: ${muscle}%</p>
     <div class="button-container">
@@ -41,7 +48,6 @@ export function addHistoryRecordToPage(
       <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
     </div>
   `;
-  historyContent.appendChild(historyElement);
 
   // Add event listener for the remove button
   historyElement
@@ -61,7 +67,6 @@ export function addHistoryRecordToPage(
       event.preventDefault();
       const historyText = historyElement.querySelector(".history-text");
       const editButton = historyElement.querySelector(".edit-button img");
-
       if (historyText.contentEditable === "true") {
         historyText.contentEditable = "false";
         editButton.src = "../assets/images/edit-icon.png";
@@ -79,13 +84,16 @@ export function addHistoryRecordToPage(
       }
     });
 
+  // Save the record to the server if it's a new record
   if (!recordId) {
     saveHistoryRecordToServer(athleteId, date, weight, fats, muscle, (id) => {
-      recordId = id;
+      recordId = id; // Update the recordId after saving to the server
     });
   }
-}
 
+  // Insert the new record at the beginning of the history-content container
+  historyContent.insertBefore(historyElement, historyContent.firstChild);
+}
 // Helper functions for history operations
 export async function saveHistoryRecordToServer(
   athleteId,

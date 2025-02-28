@@ -27,9 +27,16 @@ export function addTournamentToPage(
   tournamentId = null
 ) {
   const tournamentsContent = document.getElementById("tournaments-content");
+
+  if (!tournamentsContent) {
+    console.error("tournaments-content element not found");
+    return;
+  }
+
   const tournamentElement = document.createElement("div");
   const formattedDate = date || new Date().toISOString().split("T")[0];
 
+  // Create the HTML structure for the tournament
   tournamentElement.innerHTML = `
     <p class="tournament-text">${formattedDate}: ${tournamentName}</p>
     <div class="tournament-button-container">
@@ -37,7 +44,6 @@ export function addTournamentToPage(
       <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
     </div>
   `;
-  tournamentsContent.appendChild(tournamentElement);
 
   // Add event listener for the remove button
   tournamentElement
@@ -58,7 +64,6 @@ export function addTournamentToPage(
       const tournamentText =
         tournamentElement.querySelector(".tournament-text");
       const editButton = tournamentElement.querySelector(".edit-button img");
-
       if (tournamentText.contentEditable === "true") {
         tournamentText.contentEditable = "false";
         editButton.src = "../assets/images/edit-icon.png";
@@ -76,11 +81,18 @@ export function addTournamentToPage(
       }
     });
 
+  // Save the tournament to the server if it's a new tournament
   if (!tournamentId) {
     saveTournamentToServer(athleteId, tournamentName, formattedDate, (id) => {
-      tournamentId = id;
+      tournamentId = id; // Update the tournamentId after saving to the server
     });
   }
+
+  // Insert the new tournament at the beginning of the tournaments-content container
+  tournamentsContent.insertBefore(
+    tournamentElement,
+    tournamentsContent.firstChild
+  );
 }
 
 // Helper functions for tournament operations
@@ -170,9 +182,16 @@ export function addSupplementToPage(
   supplementId = null
 ) {
   const supplementsContent = document.getElementById("supplements-content");
+
+  if (!supplementsContent) {
+    console.error("supplements-content element not found");
+    return;
+  }
+
   const supplementElement = document.createElement("div");
   const formattedDate = date || new Date().toISOString().split("T")[0];
 
+  // Create the HTML structure for the supplement
   supplementElement.innerHTML = `
       <p class="supplement-text">${formattedDate}: ${supplement}</p>
       <div class="supplement-button-container">
@@ -180,7 +199,6 @@ export function addSupplementToPage(
         <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
       </div>
     `;
-  supplementsContent.appendChild(supplementElement);
 
   // Add event listener for the remove button
   supplementElement
@@ -201,7 +219,6 @@ export function addSupplementToPage(
       const supplementText =
         supplementElement.querySelector(".supplement-text");
       const editButton = supplementElement.querySelector(".edit-button img");
-
       if (supplementText.contentEditable === "true") {
         supplementText.contentEditable = "false";
         editButton.src = "../assets/images/edit-icon.png";
@@ -219,11 +236,18 @@ export function addSupplementToPage(
       }
     });
 
+  // Save the supplement to the server if it's a new supplement
   if (!supplementId) {
     saveSupplementToServer(athleteId, supplement, formattedDate, (id) => {
-      supplementId = id;
+      supplementId = id; // Update the supplementId after saving to the server
     });
   }
+
+  // Insert the new supplement at the beginning of the supplements-content container
+  supplementsContent.insertBefore(
+    supplementElement,
+    supplementsContent.firstChild
+  );
 }
 
 // Helper functions for supplement operations
