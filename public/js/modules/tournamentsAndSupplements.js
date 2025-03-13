@@ -191,14 +191,33 @@ export function addSupplementToPage(
   const supplementElement = document.createElement("div");
   const formattedDate = date || new Date().toISOString().split("T")[0];
 
-  // Create the HTML structure for the supplement
+  // Create the HTML structure with hidden date
   supplementElement.innerHTML = `
-      <p class="supplement-text">${formattedDate}: ${supplement}</p>
-      <div class="supplement-button-container">
-        <button class="edit-button"><img src="../assets/images/edit-icon.png" alt="Edit" /></button>
-        <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
-      </div>
-    `;
+    <p class="supplement-text"><span class="supplement-content">${supplement}</span><span class="supplement-date" data-date="${formattedDate}"></span></p>
+    <div class="button-container">
+      <button class="edit-button"><img src="../assets/images/edit-icon.png" alt="Edit" /></button>
+      <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
+    </div>
+  `;
+
+  // Add hover effect with delay
+  const supplementText = supplementElement.querySelector(".supplement-text");
+  let hoverTimeout;
+
+  supplementText.addEventListener("mouseenter", (e) => {
+    hoverTimeout = setTimeout(() => {
+      const tooltip = document.getElementById("date-tooltip");
+      tooltip.textContent = formattedDate;
+      tooltip.style.left = `${e.pageX + 10}px`;
+      tooltip.style.top = `${e.pageY + 10}px`;
+      tooltip.style.display = "block";
+    }, 1000); // 1-second delay
+  });
+
+  supplementText.addEventListener("mouseleave", () => {
+    clearTimeout(hoverTimeout);
+    document.getElementById("date-tooltip").style.display = "none";
+  });
 
   // Add event listener for the remove button
   supplementElement

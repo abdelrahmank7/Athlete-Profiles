@@ -9,6 +9,7 @@ import {
   saveTournamentToServer,
   addTournamentToPage,
 } from "./tournamentsAndSupplements.js";
+import { fetchPhoneNumbers } from "./phoneHandler.js";
 
 // Setup note form
 export function setupNoteForm(athleteId) {
@@ -39,12 +40,31 @@ export function addNoteToPage(athleteId, note, date, noteId = null) {
 
   // Create the HTML structure for the note
   noteElement.innerHTML = `
-      <p class="note-text">${formattedDate}: ${note}</p>
-      <div class="button-container">
-        <button class="edit-button"><img src="../assets/images/edit-icon.png" alt="Edit" /></button>
-        <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
-      </div>
-    `;
+  <p class="note-text" data-date="${formattedDate}">${note}</p>
+  <div class="button-container">
+    <button class="edit-button"><img src="../assets/images/edit-icon.png" alt="Edit" /></button>
+    <button class="remove-button"><img src="../assets/images/delete-icon.png" alt="Remove" /></button>
+  </div>
+`;
+
+  // Add hover effect with delay
+  const noteText = noteElement.querySelector(".note-text");
+  let hoverTimeout;
+
+  noteText.addEventListener("mouseenter", (e) => {
+    hoverTimeout = setTimeout(() => {
+      const tooltip = document.getElementById("date-tooltip");
+      tooltip.textContent = noteText.getAttribute("data-date");
+      tooltip.style.left = `${e.pageX + 10}px`; // Position near the mouse
+      tooltip.style.top = `${e.pageY + 10}px`;
+      tooltip.style.display = "block";
+    }, 1000); // 1-second delay
+  });
+
+  noteText.addEventListener("mouseleave", () => {
+    clearTimeout(hoverTimeout);
+    document.getElementById("date-tooltip").style.display = "none";
+  });
 
   // Add event listener for the remove button
   noteElement
@@ -194,27 +214,33 @@ export function setupHistoryForm(athleteId) {
     const weight = document.getElementById("history-weight-input").value;
     const fats = document.getElementById("history-fats-input").value;
     const muscle = document.getElementById("history-muscle-input").value;
-    if (weight.trim() && fats.trim() && muscle.trim()) {
+    const water = document.getElementById("history-water-input").value; // Extract water value
+
+    if (weight.trim() && fats.trim() && muscle.trim() && water.trim()) {
       await saveHistoryRecordToServer(
         athleteId,
         date,
         weight,
         fats,
         muscle,
-        (recordId) => {
+        water, // Pass water to the server
+        (id) => {
           addHistoryRecordToPage(
             athleteId,
             date,
             weight,
             fats,
             muscle,
-            recordId
+            water, // Include water here
+            id
           );
         }
       );
+      // Clear all inputs
       document.getElementById("history-weight-input").value = "";
       document.getElementById("history-fats-input").value = "";
       document.getElementById("history-muscle-input").value = "";
+      document.getElementById("history-water-input").value = ""; // Clear water input
     }
   });
 }
@@ -265,5 +291,21 @@ async function saveAthleteDetailsToServer(athleteId, details) {
     console.log("Athlete details updated successfully");
   } catch (error) {
     console.error("Error updating athlete details:", error);
+  }
+}
+
+// Fetch and display phone number
+
+export async function setupPhoneNumberDisplay(athleteId) {
+  try {
+    const phoneNumbers = await fetchPhoneNumbers(athleteId);
+    const phoneNumberElement = document.getElementById("athlete-phone-number");
+    if (phoneNumberElement) {
+      phoneNumberElement.textContent = phoneNumbers.phoneNumber || "N/A";
+    } else {
+      console.error("Phone number element not found");
+    }
+  } catch (error) {
+    console.error("Error setting up phone number display:", error);
   }
 }

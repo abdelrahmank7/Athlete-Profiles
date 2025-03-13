@@ -15,6 +15,7 @@ import {
 import { initializeCustomTable } from "./customTable.js";
 import { setupFileUpload } from "./importFiles.js";
 import { initializeSaveButton } from "./export.js";
+import { setupPhoneNumberDisplay } from "./setupForms.js";
 
 // Initialize the athlete page with all necessary data and forms
 export async function initializeAthletePage(athleteId) {
@@ -36,4 +37,5 @@ export async function initializeAthletePage(athleteId) {
   setupEditAthleteForm(athleteId); // Setup the edit athlete form
   initializeCustomTable(athleteId); // Initialize custom table
   setupFileUpload(athleteId); // Setup file upload
+  setupPhoneNumberDisplay(athleteId); // Setup phone number display
 }

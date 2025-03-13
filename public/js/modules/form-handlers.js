@@ -4,6 +4,7 @@ import {
   fetchAndDisplaySports,
   showModal,
 } from "./helpers.js";
+import { validatePhoneNumber, savePhoneNumber } from "./phoneHandler.js";
 
 export function handleFormSubmissions() {
   const athleteForm = document.getElementById("athlete-form");
@@ -13,8 +14,18 @@ export function handleFormSubmissions() {
       const formData = new FormData(e.target);
       const athleteData = Object.fromEntries(formData.entries());
 
-      const { name, birthdate, weight, targetWeight, height, club, sport } =
-        athleteData;
+      const {
+        name,
+        birthdate,
+        weight,
+        targetWeight,
+        height,
+        club,
+        sport,
+        phoneNumber,
+      } = athleteData;
+
+      // Validate required fields
       if (
         !name ||
         !birthdate ||
@@ -28,7 +39,14 @@ export function handleFormSubmissions() {
         return;
       }
 
+      // Validate phone number
+      if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
+        showModal("Invalid phone number format.");
+        return;
+      }
+
       try {
+        // Save athlete data
         const response = await fetch("/api/athletes", {
           method: "POST",
           headers: {
@@ -36,14 +54,26 @@ export function handleFormSubmissions() {
           },
           body: JSON.stringify(athleteData),
         });
-        if (response.ok) {
-          showModal("Athlete added successfully!");
-          e.target.reset();
-          await fetchAndDisplayAthletes();
-        } else {
+
+        if (!response.ok) {
           const errorData = await response.json();
           showModal(`Failed to add athlete: ${errorData.message}`);
+          return;
         }
+
+        const athlete = await response.json();
+
+        // Save phone number if provided
+        if (phoneNumber) {
+          const saved = await savePhoneNumber(athlete.id, phoneNumber);
+          if (!saved) {
+            showModal("Failed to save phone number.");
+          }
+        }
+
+        showModal("Athlete added successfully!");
+        e.target.reset();
+        await fetchAndDisplayAthletes();
       } catch (error) {
         console.error("Error adding athlete:", error);
         showModal("Error adding athlete.");

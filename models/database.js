@@ -23,26 +23,6 @@ const clubsAndSportsDb = new Database(clubsAndSportsDbPath);
 console.log("Connected to the SQLite database.");
 console.log("Connected to the SQLite clubsAndSports database.");
 
-// Function to wrap better-sqlite3 methods
-const wrapDatabaseMethods = (db) => ({
-  all: (query, params = []) => {
-    const stmt = db.prepare(query);
-    return stmt.all(params);
-  },
-  get: (query, params = []) => {
-    const stmt = db.prepare(query);
-    return stmt.get(params);
-  },
-  run: (query, params = []) => {
-    const stmt = db.prepare(query);
-    return stmt.run(params);
-  },
-});
-
-// Wrap the databases with the custom methods
-// const wrappedAthletesDb = wrapDatabaseMethods(athletesDb);
-// const wrappedClubsAndSportsDb = wrapDatabaseMethods(clubsAndSportsDb);
-
 // Function to create tables
 const createTables = (db) => {
   const tables = [
@@ -60,6 +40,14 @@ const createTables = (db) => {
         currentWeight REAL,
         fatsPercentage REAL,
         musclePercentage REAL
+      `,
+    },
+    {
+      name: "athlete_contacts", // New table for phone numbers
+      schema: `
+        athleteId TEXT PRIMARY KEY,
+        phoneNumber TEXT,
+        FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },
     {
@@ -111,6 +99,7 @@ const createTables = (db) => {
         weight TEXT,
         fats TEXT,
         muscle TEXT,
+        water REAL,
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },
@@ -165,5 +154,5 @@ const createTables = (db) => {
 createTables(athletesDb);
 createTables(clubsAndSportsDb);
 
-// Export the wrapped databases
+// Export the databases
 export { athletesDb, clubsAndSportsDb };

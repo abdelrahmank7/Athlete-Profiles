@@ -62,6 +62,7 @@ export async function fetchHistory(athleteId) {
         record.weight,
         record.fats,
         record.muscle,
+        record.water, // Ensure water is passed
         record.id
       );
     });

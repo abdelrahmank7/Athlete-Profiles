@@ -91,11 +91,11 @@ export async function fetchAndDisplayAthletes(filters = {}) {
     console.log("Filtered athletes data:", filteredAthletes); // Log the filtered athletes
 
     // Display the first 4 athletes
-    const athletesToDisplay = filteredAthletes.slice(0, 4);
+    const athletesToDisplay = filteredAthletes.slice(0, 2);
 
     // Handle additional athletes if there are more than 4
     const additionalAthletes =
-      filteredAthletes.length > 4 ? filteredAthletes.slice(4) : [];
+      filteredAthletes.length > 4 ? filteredAthletes.slice(2) : [];
 
     console.log("Athletes to display:", athletesToDisplay); // Log the athletes to display
     console.log("Additional athletes:", additionalAthletes); // Log additional athletes

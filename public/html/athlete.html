@@ -27,6 +27,10 @@
               <strong>Birthdate:</strong> <span id="athlete-birthdate"></span>
             </p>
             <p><strong>Age:</strong> <span id="athlete-age"></span></p>
+            <p>
+              <strong>Phone Number:</strong>
+              <span id="athlete-phone-number"></span>
+            </p>
             <p><strong>Weight:</strong> <span id="athlete-weight"></span></p>
             <p>
               <strong>Target Weight:</strong>
@@ -70,7 +74,14 @@
               type="number"
               step="0.1"
               id="history-muscle-input"
-              placeholder="Muscle (%)"
+              placeholder="Muscle (kg)"
+              required
+            />
+            <input
+              type="number"
+              step="0.1"
+              id="history-water-input"
+              placeholder="Water (L)"
               required
             />
             <button type="submit">Add Record</button>
@@ -148,6 +159,8 @@
           <p id="alert-message"></p>
         </div>
       </div>
+      <!-- tooltip for dates -->
+      <div id="date-tooltip" class="tooltip"></div>
     </main>
     <script type="module" src="../js/athlete.js" defer></script>
     <script

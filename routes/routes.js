@@ -1,4 +1,3 @@
-// routes/routes.js
 import express from "express";
 import athletesRoutes from "./athletes.js";
 import clubsRoutes from "./clubs.js";
@@ -15,6 +14,7 @@ import athletesManagementRoutes from "./athlete-management.js";
 import notificationsRoutes from "./notifications.js";
 import statisticsRoutes from "./statistics.js";
 import exportRoutes from "./export.js";
+import contactRoutes from "./athleteContact.js"; // Import the contact route
 
 const router = express.Router();
 
@@ -28,10 +28,11 @@ router.use("/athletes", tournamentsRoutes);
 router.use("/athletes", historyRoutes);
 router.use("/athletes", generalInfoRoutes);
 router.use("/athletes", customTableRoutes);
-router.use("/athletes", filesRoutes); // Use the files route
+router.use("/athletes", filesRoutes);
 router.use("/athlete-management", athletesManagementRoutes);
 router.use("/notifications", notificationsRoutes);
 router.use("/statistics", statisticsRoutes);
 router.use("/export", exportRoutes);
+router.use("/athletes", contactRoutes); // Ensure this line is present
 
 export default router;

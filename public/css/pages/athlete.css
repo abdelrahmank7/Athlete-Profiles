@@ -139,6 +139,24 @@ body {
   text-align: justify;
 }
 
+/* Add to athlete.css */
+.note-date,
+.supplement-date,
+.history-date {
+  display: none;
+  margin-left: 10px;
+  color: #666;
+  font-size: 0.9em;
+  transition: opacity 0.3s ease;
+}
+
+.note-text:hover .note-date,
+.supplement-text:hover .supplement-date,
+.history-text:hover .history-date {
+  display: inline;
+  opacity: 1;
+}
+
 /* Container for the edit and remove buttons */
 .button-container,
 .supplement-button-container,
@@ -250,4 +268,20 @@ body {
 
 .edit-button img:hover {
   transform: rotate(360deg); /* Simple animation for icon change */
+}
+
+.tooltip {
+  position: absolute;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  display: none;
+  z-index: 1000;
+  font-size: 0.9em;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: none; /* Prevent interference with mouse events */
+  white-space: nowrap; /* Keep text on a single line */
+  max-width: 200px; /* Adjust as needed */
 }

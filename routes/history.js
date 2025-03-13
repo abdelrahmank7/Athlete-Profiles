@@ -23,25 +23,27 @@ router.get("/:athleteId/history", (req, res) => {
 // Add a history record
 router.post("/:athleteId/history", (req, res) => {
   const { athleteId } = req.params;
-  const { date, weight, fats, muscle } = req.body;
+  const { date, weight, fats, muscle, water } = req.body; // Include water
   const historyId = uuidv4();
 
-  if (!date || !weight || !fats || !muscle) {
+  if (!date || !weight || !fats || !muscle || !water) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
   const query = `
-    INSERT INTO history (id, athleteId, date, weight, fats, muscle)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO history (id, athleteId, date, weight, fats, muscle, water)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
-  const params = [historyId, athleteId, date, weight, fats, muscle];
+  const params = [historyId, athleteId, date, weight, fats, muscle, water]; // Include water
 
   try {
     const stmt = athletesDb.prepare(query);
     stmt.run(params);
-    res
-      .status(201)
-      .json({ message: "History record added successfully", id: historyId });
+    res.status(201).json({
+      message: "History record added successfully",
+      id: historyId,
+      water: water, // Return water value
+    });
   } catch (err) {
     console.error("Error adding history record:", err.message);
     res.status(500).json({ error: "Failed to add history record" });
@@ -51,7 +53,7 @@ router.post("/:athleteId/history", (req, res) => {
 // Update a history record
 router.put("/:athleteId/history/:historyId", (req, res) => {
   const { athleteId, historyId } = req.params;
-  const { date, weight, fats, muscle } = req.body;
+  const { date, weight, fats, muscle, water } = req.body; // Include water
 
   let query = `UPDATE history SET `;
   const params = [];
@@ -71,6 +73,10 @@ router.put("/:athleteId/history/:historyId", (req, res) => {
   if (muscle) {
     query += `muscle = ?, `;
     params.push(muscle);
+  }
+  if (water) {
+    query += `water = ?, `;
+    params.push(water);
   }
 
   query = query.slice(0, -2); // Remove last comma and space
