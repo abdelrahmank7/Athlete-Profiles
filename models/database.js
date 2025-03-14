@@ -137,6 +137,16 @@ const createTables = (db) => {
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },
+    {
+      name: "injuries", // New table for injuries
+      schema: `
+        id TEXT PRIMARY KEY,
+        athleteId TEXT,
+        injury TEXT,
+        date TEXT,
+        FOREIGN KEY (athleteId) REFERENCES athletes(id)
+      `,
+    },
   ];
 
   tables.forEach(({ name, schema }) => {

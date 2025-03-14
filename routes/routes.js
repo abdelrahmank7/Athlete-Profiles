@@ -15,6 +15,7 @@ import notificationsRoutes from "./notifications.js";
 import statisticsRoutes from "./statistics.js";
 import exportRoutes from "./export.js";
 import contactRoutes from "./athleteContact.js"; // Import the contact route
+import injuriesRoutes from "./injuries.js";
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.use("/notifications", notificationsRoutes);
 router.use("/statistics", statisticsRoutes);
 router.use("/export", exportRoutes);
 router.use("/athletes", contactRoutes); // Ensure this line is present
+router.use("/athletes", injuriesRoutes);
 
 export default router;
