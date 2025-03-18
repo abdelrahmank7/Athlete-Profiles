@@ -27,6 +27,8 @@ export async function fetchAthleteDetails(athleteId) {
       athleteDetails.height;
     document.getElementById("athlete-club").textContent = athleteDetails.club;
     document.getElementById("athlete-sport").textContent = athleteDetails.sport;
+
+    return athleteDetails;
   } catch (error) {
     console.error("Error fetching athlete details:", error);
   }
@@ -62,7 +64,7 @@ export async function fetchHistory(athleteId) {
         record.weight,
         record.fats,
         record.muscle,
-        record.water, // Ensure water is passed
+        record.water,
         record.id
       );
     });

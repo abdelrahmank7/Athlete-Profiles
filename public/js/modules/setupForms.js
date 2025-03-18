@@ -10,6 +10,7 @@ import {
   addTournamentToPage,
 } from "./tournamentsAndSupplements.js";
 import { fetchPhoneNumbers } from "./phoneHandler.js";
+import { addInjuryToPage, saveInjuryToServer } from "./injuries.js";
 
 // Setup note form
 export function setupNoteForm(athleteId) {
@@ -307,5 +308,35 @@ export async function setupPhoneNumberDisplay(athleteId) {
     }
   } catch (error) {
     console.error("Error setting up phone number display:", error);
+  }
+}
+
+// Setup injury form
+export function setupInjuryForm(athleteId) {
+  const injuryForm = document.getElementById("injury-form");
+  if (injuryForm) {
+    injuryForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const injuryInput = document.getElementById("injury-input");
+      const injuryDateInput = document.getElementById("injury-date-input");
+      const injury = injuryInput.value;
+      const date = injuryDateInput.value;
+
+      if (!injury || !date) {
+        showModal("All fields are required.");
+        return;
+      }
+
+      try {
+        await saveInjuryToServer(athleteId, injury, date, (id) => {
+          addInjuryToPage(athleteId, injury, date, id);
+        });
+        injuryInput.value = "";
+        injuryDateInput.value = "";
+      } catch (error) {
+        console.error("Error adding injury:", error);
+        showModal("Error adding injury.");
+      }
+    });
   }
 }

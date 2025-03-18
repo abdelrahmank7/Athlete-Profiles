@@ -1,4 +1,5 @@
 import { initializeAthletePage } from "./modules/initializeAthletePage.js";
+import { setupInjuryForm } from "./modules/setupForms.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const athleteId = new URLSearchParams(window.location.search).get("id");
@@ -11,4 +12,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   await initializeAthletePage(athleteId);
+  setupInjuryForm(athleteId);
 });

@@ -117,7 +117,8 @@ body {
 /* Ensure note and buttons are aligned on the same line */
 #notes-content div,
 #supplements-content div,
-#tournaments-content div {
+#tournaments-content div,
+#injuries-content div {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -131,7 +132,8 @@ body {
 /* Ensure text wraps properly and doesn't overflow */
 .note-text,
 .supplement-text,
-.tournament-text {
+.tournament-text,
+.injury-text {
   word-wrap: break-word;
   white-space: pre-wrap;
   flex-grow: 1;
@@ -142,7 +144,9 @@ body {
 /* Add to athlete.css */
 .note-date,
 .supplement-date,
-.history-date {
+.history-date,
+.tournament-date,
+.injury-date {
   display: none;
   margin-left: 10px;
   color: #666;
@@ -152,7 +156,9 @@ body {
 
 .note-text:hover .note-date,
 .supplement-text:hover .supplement-date,
-.history-text:hover .history-date {
+.history-text:hover .history-date,
+.tournament-text:hover .tournament-date,
+.injury-text:hover .injury-date {
   display: inline;
   opacity: 1;
 }
@@ -160,7 +166,8 @@ body {
 /* Container for the edit and remove buttons */
 .button-container,
 .supplement-button-container,
-.tournament-button-container {
+.tournament-button-container,
+.injury-button-container {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -184,7 +191,8 @@ body {
 /* Style for notes, supplements, and tournaments content */
 #notes-content,
 #supplements-content,
-#tournaments-content {
+#tournaments-content,
+#injuries-content {
   max-height: 300px; /* Set a max height for the section */
   overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
 }

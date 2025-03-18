@@ -16,6 +16,17 @@ import { initializeCustomTable } from "./customTable.js";
 import { setupFileUpload } from "./importFiles.js";
 import { initializeSaveButton } from "./export.js";
 import { setupPhoneNumberDisplay } from "./setupForms.js";
+import { fetchInjuries } from "./injuries.js"; // Import the fetchInjuries function
+
+// Function to set the background image based on the sport
+function setBackgroundImage(sport) {
+  const mainElement = document.querySelector("main");
+  const imagePath = `../assets/images/sports-backgrounds/${sport.toLowerCase()}.jpg`;
+  mainElement.style.backgroundImage = `url(${imagePath})`;
+  mainElement.style.backgroundSize = "cover";
+  mainElement.style.backgroundPosition = "center";
+  mainElement.style.backgroundRepeat = "no-repeat";
+}
 
 // Initialize the athlete page with all necessary data and forms
 export async function initializeAthletePage(athleteId) {
@@ -24,11 +35,16 @@ export async function initializeAthletePage(athleteId) {
   // Set the athleteId in the hidden input field
   document.getElementById("athlete-id").value = athleteId;
 
-  await fetchAthleteDetails(athleteId);
+  const athleteDetails = await fetchAthleteDetails(athleteId);
+  if (athleteDetails && athleteDetails.sport) {
+    setBackgroundImage(athleteDetails.sport);
+  }
+
   await fetchSupplements(athleteId);
   await fetchTournaments(athleteId);
   await fetchNotes(athleteId);
   await fetchHistory(athleteId); // Ensure this function is called
+  await fetchInjuries(athleteId); // Fetch injuries
   initializeSaveButton(); // Initialize the save button
   setupNoteForm(athleteId);
   setupSupplementForm(athleteId);

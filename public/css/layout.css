@@ -11,11 +11,11 @@
 }
 
 .card {
+  background: var(--card-background);
   padding: 20px;
-  background-color: var(--card-background);
-  border: 1px solid var(--input-border-color);
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
 #results {
