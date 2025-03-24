@@ -325,6 +325,22 @@ document.addEventListener("DOMContentLoaded", () => {
     searchButton.addEventListener("click", fetchAthletes);
   };
 
+  document
+    .getElementById("generate-word-button")
+    .addEventListener("click", async () => {
+      const athleteId = document.getElementById("athlete-id").value;
+      const systemId = document.getElementById("system-select").value;
+      const sport = document.getElementById("athlete-sport").textContent;
+
+      try {
+        await generateWordFile(athleteId, systemId, sport);
+        alert("Word file generated successfully!");
+      } catch (error) {
+        console.error("Error generating Word file:", error);
+        alert("Failed to generate Word file.");
+      }
+    });
+
   // Fetch and display statistics on page load
   fetchStatistics();
   fetchClubs();

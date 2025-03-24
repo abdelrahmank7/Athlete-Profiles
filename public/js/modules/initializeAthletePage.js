@@ -22,10 +22,19 @@ import { fetchInjuries } from "./injuries.js"; // Import the fetchInjuries funct
 function setBackgroundImage(sport) {
   const mainElement = document.querySelector("main");
   const imagePath = `../assets/images/sports-backgrounds/${sport.toLowerCase()}.jpg`;
-  mainElement.style.backgroundImage = `url(${imagePath})`;
-  mainElement.style.backgroundSize = "cover";
-  mainElement.style.backgroundPosition = "center";
-  mainElement.style.backgroundRepeat = "no-repeat";
+
+  fetch(imagePath)
+    .then((response) => {
+      if (response.ok) {
+        mainElement.style.backgroundImage = `url(${imagePath})`;
+      } else {
+        console.warn(`Background image for sport "${sport}" not found.`);
+        mainElement.style.backgroundImage = "none"; // Fallback
+      }
+    })
+    .catch((error) => {
+      console.error("Error loading background image:", error);
+    });
 }
 
 // Initialize the athlete page with all necessary data and forms

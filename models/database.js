@@ -147,6 +147,26 @@ const createTables = (db) => {
         FOREIGN KEY (athleteId) REFERENCES athletes(id)
       `,
     },
+    {
+      name: "systems",
+      schema: `
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL, -- e.g., school, free, ramadan
+        calories INTEGER NOT NULL -- e.g., 1500, 2000, etc.
+      `,
+    },
+    {
+      name: "athlete_systems",
+      schema: `
+        id TEXT PRIMARY KEY,
+        athleteId TEXT NOT NULL,
+        systemId TEXT NOT NULL,
+        assignedDate TEXT NOT NULL,
+        FOREIGN KEY (athleteId) REFERENCES athletes(id),
+        FOREIGN KEY (systemId) REFERENCES systems(id)
+      `,
+    },
   ];
 
   tables.forEach(({ name, schema }) => {

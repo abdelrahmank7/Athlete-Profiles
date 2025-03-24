@@ -109,6 +109,10 @@ async function startExpressServer() {
     res.sendFile(path.join(__dirname, "public/html/athlete.html"));
   });
 
+  app.get("/system-management.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public/html/system-management.html"));
+  });
+
   app.get("/athlete-management.html", (req, res) => {
     res.sendFile(path.join(__dirname, "public/html/athlete-management.html"));
   });

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Management</title>
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/pages/system-management.css" />
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./athlete-management.html">Athletes</a>
+      <a href="./system-management.html">Systems</a>
+    </nav>
+    <main>
+      <h1>System Management</h1>
+      <div id="system-selection">
+        <label for="athlete-select">Select Athlete:</label>
+        <select id="athlete-select"></select>
+
+        <label for="system-select">Select System:</label>
+        <select id="system-select"></select>
+
+        <button id="assign-system-button">Assign System</button>
+      </div>
+      <button id="generate-word-button">Generate Word File</button>
+      <div id="system-management">
+        <h2>Manage Systems</h2>
+        <form id="add-system-form">
+          <input
+            type="text"
+            id="system-name"
+            placeholder="System Name"
+            required
+          />
+          <select id="system-type" required>
+            <option value="school">School</option>
+            <option value="free">Free</option>
+            <option value="ramadan">Ramadan</option>
+          </select>
+          <input
+            type="number"
+            id="system-calories"
+            placeholder="Calories"
+            required
+          />
+          <button type="submit">Add System</button>
+        </form>
+
+        <ul id="system-list">
+          <!-- Dynamically populated -->
+        </ul>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loading-spinner" class="modal" style="display: none">
+        <div class="modal-content">
+          <p>Loading...</p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="../js/system-management.js"></script>
+  </body>
+</html>
